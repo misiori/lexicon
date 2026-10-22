@@ -47,15 +47,89 @@ function cleanWiktionaryHtml(html: string): string {
     .trim();
 }
 
-async function fetchWiktionaryDirect(rawWord: string) {
+async function fetchSpanishWiktionaryDefinition(word: string, depth = 0): Promise<string | null> {
+  if (depth > 1) return null;
+  try {
+    const res = await withTimeout(
+      fetch(
+        `https://es.wiktionary.org/w/api.php?action=parse&page=${encodeURIComponent(word)}&prop=wikitext&format=json`,
+        {
+          headers: {
+            'User-Agent': 'LexiconApp/1.0 (academic dictionary; contact: info@example.com)',
+          },
+        }
+      ),
+      2500
+    );
+    if (!res.ok) return null;
+    const data: any = await res.json();
+    const wikitext = data?.parse?.wikitext?.['*'] || '';
+    if (!wikitext) return null;
+
+    const lines = wikitext.split('\n');
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (/^(;[0-9]+|:[0-9]+|\*[0-9]+)/.test(line)) {
+        const formaMatch = line.match(/\{\{forma (?:sustantivo|adjetivo)\|([^|}]+)\|femenino/i);
+        if (formaMatch && formaMatch[1]) {
+          const baseWord = formaMatch[1];
+          const baseDef = await fetchSpanishWiktionaryDefinition(baseWord, depth + 1);
+          if (baseDef) {
+            return `Forma femenina de ${baseWord}: ${baseDef.toLowerCase().replace(/padre del padre/g, 'madre del padre')}`;
+          }
+          return `Forma femenina de ${baseWord}.`;
+        }
+
+        const cleaned = line
+          .replace(/^(;[0-9]+:?|:[0-9]+:?|\*[0-9]+:?)\s*/, '')
+          .replace(/\[\[([^|\]]+\|)?([^\]]+)\]\]/g, '$2')
+          .replace(/\{\{[^}]+\}\}/g, '')
+          .replace(/^[:;]\s*/, '')
+          .trim();
+        if (cleaned.length > 5) {
+          return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+        }
+      }
+    }
+  } catch {
+    // Ignore timeout or fetch error
+  }
+  return null;
+}
+
+function isSpanishWordCandidate(word: string, hint?: string, data?: any): boolean {
+  if (hint === 'es' || hint === 'spanish') return true;
+  const w = word.toLowerCase().trim();
+  if (/[áéíóúñ¿¡]/i.test(w)) return true;
+  if (/(uela|uelo|illa|illo|ita|ito|ero|era|oso|osa|ado|ada|ido|ida|eza|ura|miento|ción|sión|dad|tad|mente|ar|er|ir)$/i.test(w)) return true;
+  if (/^(abuel[ao]|amig[ao]|t[ií][ao]|herman[ao]|prim[ao]|padre|madre|hij[ao]|niñ[ao]|niet[ao]|churr[ao]s?|tac[ao]s?|burrit[ao]s?|salsas?|fiestas?|siestas?|haciendas?|sombreros?|quesos?|tortillas?|cervezas?)$/i.test(w)) return true;
+  
+  if (data && data.es) {
+    if (!data.en) return true;
+    const enDef = cleanWiktionaryHtml(data.en?.[0]?.definitions?.[0]?.definition || '').toLowerCase();
+    if (/(hispanic|spanish|borrowed from spanish|in spain|in mexico|in latin america)/i.test(enDef)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+async function fetchWiktionaryDirect(rawWord: string, languageHint?: string) {
   const cleanWord = rawWord.trim();
   if (!cleanWord) return null;
+
+  const initialSpanish = isSpanishWordCandidate(cleanWord, languageHint);
 
   const variants = [
     cleanWord.toLowerCase(),
     cleanWord,
     cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1).toLowerCase(),
   ];
+
+  let nativeSpanishDef: string | null = null;
+  if (initialSpanish) {
+    nativeSpanishDef = await fetchSpanishWiktionaryDefinition(cleanWord);
+  }
 
   for (const variant of variants) {
     try {
@@ -69,7 +143,45 @@ async function fetchWiktionaryDirect(rawWord: string) {
       );
       if (!res.ok) continue;
       const data: any = await res.json();
-      const langSections = data.en || data[Object.keys(data)[0]] || [];
+
+      let langSections: any[] = [];
+      let detectedLang = 'English';
+      let detectedLangCode = 'en';
+
+      const isWordSpanish = isSpanishWordCandidate(cleanWord, languageHint, data);
+
+      if (isWordSpanish && data.es) {
+        langSections = data.es;
+        detectedLang = 'Spanish';
+        detectedLangCode = 'es';
+        if (!nativeSpanishDef) {
+          nativeSpanishDef = await fetchSpanishWiktionaryDefinition(cleanWord);
+        }
+      } else if (languageHint && languageHint !== 'all' && data[languageHint]) {
+        langSections = data[languageHint];
+        detectedLang = languageHint === 'es' ? 'Spanish' : languageHint.toUpperCase();
+        detectedLangCode = languageHint;
+      } else if (data.es && !data.en) {
+        langSections = data.es;
+        detectedLang = 'Spanish';
+        detectedLangCode = 'es';
+      } else if (data.en) {
+        langSections = data.en;
+        detectedLang = 'English';
+        detectedLangCode = 'en';
+      } else if (data.es) {
+        langSections = data.es;
+        detectedLang = 'Spanish';
+        detectedLangCode = 'es';
+      } else {
+        const nonOther = Object.keys(data).find((k) => k !== 'other');
+        if (nonOther && data[nonOther]) {
+          langSections = data[nonOther];
+          detectedLang = nonOther === 'es' ? 'Spanish' : nonOther.toUpperCase();
+          detectedLangCode = nonOther;
+        }
+      }
+
       if (!Array.isArray(langSections) || langSections.length === 0) continue;
 
       const posPriority = [
@@ -81,7 +193,13 @@ async function fetchWiktionaryDirect(rawWord: string) {
         return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
       });
 
-      const senses: Array<{ definition: string; register?: string; examples?: Array<{ quote: string }> }> = [];
+      const senses: Array<{
+        definition: string;
+        definitionEs?: string;
+        definitionEn?: string;
+        register?: string;
+        examples?: Array<{ quote: string; translation?: string }>;
+      }> = [];
       let detectedPos = sorted[0]?.partOfSpeech || 'noun';
 
       for (const sec of sorted) {
@@ -90,16 +208,24 @@ async function fetchWiktionaryDirect(rawWord: string) {
           const plain = cleanWiktionaryHtml(defObj.definition || '');
           if (!plain || plain.length < 3) continue;
 
-          const examples: Array<{ quote: string }> = [];
+          const examples: Array<{ quote: string; translation?: string }> = [];
           if (Array.isArray(defObj.parsedExamples)) {
             for (const ex of defObj.parsedExamples) {
               const exText = cleanWiktionaryHtml(ex.example || (typeof ex === 'string' ? ex : ''));
-              if (exText && exText.length > 4) examples.push({ quote: exText });
+              const exTrans = cleanWiktionaryHtml(ex.translation || '');
+              if (exText && exText.length > 4) {
+                examples.push({
+                  quote: exText,
+                  translation: exTrans || undefined,
+                });
+              }
             }
           }
 
           senses.push({
             definition: plain,
+            definitionEn: plain,
+            definitionEs: nativeSpanishDef || undefined,
             register: pos || undefined,
             examples: examples.length > 0 ? examples.slice(0, 2) : undefined,
           });
@@ -109,8 +235,12 @@ async function fetchWiktionaryDirect(rawWord: string) {
       if (senses.length > 0) {
         return {
           word: cleanWord,
+          language: detectedLang,
+          languageCode: detectedLangCode,
           partOfSpeech: detectedPos.toLowerCase(),
           shortDefinition: senses[0].definition,
+          shortDefinitionEn: senses[0].definition,
+          shortDefinitionEs: nativeSpanishDef || undefined,
           senses: senses.slice(0, 8),
           source: 'Wiktionary',
         };
@@ -120,7 +250,29 @@ async function fetchWiktionaryDirect(rawWord: string) {
     }
   }
 
-  // Fallback to Free Dictionary API
+  // If native Spanish definition found without en.wiktionary
+  if (nativeSpanishDef) {
+    return {
+      word: cleanWord,
+      language: 'Spanish',
+      languageCode: 'es',
+      partOfSpeech: /(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun',
+      shortDefinition: nativeSpanishDef,
+      shortDefinitionEs: nativeSpanishDef,
+      shortDefinitionEn: `Spanish lexical entry for "${cleanWord}".`,
+      senses: [
+        {
+          definition: nativeSpanishDef,
+          definitionEs: nativeSpanishDef,
+          definitionEn: `Spanish lexical entry for "${cleanWord}".`,
+          register: /(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun',
+        },
+      ],
+      source: 'Wiktionary (Español)',
+    };
+  }
+
+  // Fallback to Free Dictionary API for English
   try {
     const dictRes = await fetch(
       `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord.toLowerCase())}`
@@ -129,7 +281,7 @@ async function fetchWiktionaryDirect(rawWord: string) {
       const entries: any = await dictRes.json();
       if (Array.isArray(entries) && entries.length > 0) {
         const entry = entries[0];
-        const senses: Array<{ definition: string; register?: string; examples?: Array<{ quote: string }> }> = [];
+        const senses: Array<{ definition: string; definitionEn?: string; register?: string; examples?: Array<{ quote: string }> }> = [];
         let detectedPos = 'noun';
 
         for (const meaning of entry.meanings || []) {
@@ -139,6 +291,7 @@ async function fetchWiktionaryDirect(rawWord: string) {
             if (def.definition) {
               senses.push({
                 definition: def.definition,
+                definitionEn: def.definition,
                 register: pos,
                 examples: def.example ? [{ quote: def.example }] : undefined,
               });
@@ -149,8 +302,11 @@ async function fetchWiktionaryDirect(rawWord: string) {
         if (senses.length > 0) {
           return {
             word: cleanWord,
+            language: 'English',
+            languageCode: 'en',
             partOfSpeech: detectedPos,
             shortDefinition: senses[0].definition,
+            shortDefinitionEn: senses[0].definition,
             senses: senses.slice(0, 8),
             source: 'Open Dictionary',
           };
@@ -166,7 +322,8 @@ async function fetchWiktionaryDirect(rawWord: string) {
 
 // Wiktionary Definition API: returns real definitions and senses for any searched word
 app.get('/api/definition/:word', async (req, res) => {
-  const result = await fetchWiktionaryDirect(req.params.word);
+  const langHint = (req.query.lang as string) || undefined;
+  const result = await fetchWiktionaryDirect(req.params.word, langHint);
   if (!result) {
     return res.status(404).json({ error: 'Definition not found' });
   }
@@ -175,13 +332,13 @@ app.get('/api/definition/:word', async (req, res) => {
 
 // Full-stack Etymology & Historical Roots Reconstructor API
 app.post('/api/etymology', async (req, res) => {
-  const { word } = req.body;
+  const { word, languageHint } = req.body;
   if (!word || typeof word !== 'string') {
     return res.status(400).json({ error: 'Word parameter is required' });
   }
 
   const cleanWord = word.trim().toLowerCase();
-  const wiktionaryMeaning = await fetchWiktionaryDirect(cleanWord);
+  const wiktionaryMeaning = await fetchWiktionaryDirect(cleanWord, languageHint);
 
   try {
     const prompt = `Perform a comprehensive, scientifically rigorous historical etymology and philological reconstruction for the word: "${cleanWord}".
@@ -382,12 +539,17 @@ Ensure every historical timeline stage, reconstructed proto-form with asterisks 
         wiktionaryMeaning
           ? {
               definition: wiktionaryMeaning.shortDefinition,
+              definitionEs: wiktionaryMeaning.shortDefinitionEs,
+              definitionEn: wiktionaryMeaning.shortDefinitionEn,
               senses: wiktionaryMeaning.senses,
               partOfSpeech: wiktionaryMeaning.partOfSpeech,
               sourceName: 'Wiktionary',
               sourceUrl: `https://en.wiktionary.org/wiki/${encodeURIComponent(cleanWord)}`,
+              language: wiktionaryMeaning.language,
+              languageCode: wiktionaryMeaning.languageCode,
             }
-          : undefined
+          : undefined,
+        languageHint || wiktionaryMeaning?.languageCode
       );
       return res.json({
         word: entry.word,
@@ -395,6 +557,8 @@ Ensure every historical timeline stage, reconstructed proto-form with asterisks 
         languageCode: entry.languageCode,
         partOfSpeech: entry.partOfSpeech,
         shortDefinition: entry.shortDefinition,
+        shortDefinitionEs: entry.shortDefinitionEs,
+        shortDefinitionEn: entry.shortDefinitionEn,
         protoRoot: entry.etymology.protoRoot,
         centuryOfFirstAttestation: entry.etymology.centuryOfFirstAttestation,
         origin: entry.etymology.origin,

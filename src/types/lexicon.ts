@@ -35,7 +35,9 @@ export interface ExampleSentence {
 }
 
 export interface WordSense {
-  definition: string;
+  definition: string; // Primary definition (or English)
+  definitionEs?: string; // Spanish definition / translation
+  definitionEn?: string; // English definition
   register?: string; // e.g. "poetic", "colloquial", "formal", "philosophical"
   examples?: ExampleSentence[];
 }
@@ -98,6 +100,8 @@ export interface WordEntry {
   ipa?: string;
   audioUrl?: string;
   shortDefinition: string;
+  shortDefinitionEs?: string; // Meaning in Spanish
+  shortDefinitionEn?: string; // Meaning in English
   linguisticNote?: string;
   existentialCategory?: ExistentialCategory;
   morphemes?: Morpheme[];

@@ -6,7 +6,7 @@ import { Search, Loader2, BookOpen, Globe2, AlertCircle } from 'lucide-react';
 interface Props {
   initialQuery?: string;
   initialLanguage?: string;
-  onSelectWord: (word: string) => void;
+  onSelectWord: (word: string, languageHint?: string) => void;
   onUpdateQuery: (query: string, language: string) => void;
 }
 
@@ -58,7 +58,7 @@ export const SearchView: React.FC<Props> = ({
     if (!exactLocalMatch) {
       setIsLoadingExternal(true);
       try {
-        const ext = await fetchExternalWord(searchTerm);
+        const ext = await fetchExternalWord(searchTerm, lang);
         setExternalResult(ext);
       } catch (err) {
         console.warn('External search error:', err);
@@ -181,7 +181,7 @@ export const SearchView: React.FC<Props> = ({
                 {localResults.map((entry) => (
                   <article
                     key={entry.id}
-                    onClick={() => onSelectWord(entry.word)}
+                    onClick={() => onSelectWord(entry.word, entry.languageCode)}
                     className="py-3 hover:bg-[#101010] px-2.5 -mx-2.5 rounded-sm transition-colors cursor-pointer group"
                   >
                     <div className="flex items-baseline justify-between">
@@ -232,7 +232,7 @@ export const SearchView: React.FC<Props> = ({
               </div>
 
               <article
-                onClick={() => onSelectWord(externalResult.word)}
+                onClick={() => onSelectWord(externalResult.word, externalResult.languageCode)}
                 className="border border-[#252525] hover:border-[#606060] bg-[#080808] hover:bg-[#121212] p-4 rounded-sm transition-colors cursor-pointer group"
               >
                 <div className="flex items-baseline justify-between">
@@ -240,7 +240,9 @@ export const SearchView: React.FC<Props> = ({
                     <span className="font-caveat text-xl text-[#E8E8E8] group-hover:underline">
                       {externalResult.word}
                     </span>
-                    <span className="text-xs text-[#606060]">{externalResult.language}</span>
+                    <span className="text-xs text-[#A0A0A0] font-medium border border-[#303030] px-1.5 py-0.5 rounded-xs">
+                      {externalResult.language}
+                    </span>
                     {externalResult.ipa && (
                       <span className="text-[11px] font-mono text-[#606060]">
                         {externalResult.ipa}
@@ -260,9 +262,16 @@ export const SearchView: React.FC<Props> = ({
                     )}
                   </div>
                 )}
-                <p className="text-xs text-[#888888] mt-1.5 leading-relaxed">
-                  {externalResult.shortDefinition}
-                </p>
+                <div className="space-y-1 mt-2 text-xs">
+                  <p className="text-[#EDEDED] leading-relaxed">
+                    {externalResult.shortDefinitionEn || externalResult.shortDefinition}
+                  </p>
+                  {externalResult.shortDefinitionEs && (
+                    <p className="text-[#A0A0A0] font-serif leading-relaxed">
+                      {externalResult.shortDefinitionEs}
+                    </p>
+                  )}
+                </div>
               </article>
             </div>
           )}

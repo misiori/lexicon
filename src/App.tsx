@@ -52,7 +52,7 @@ export default function App() {
 
   // Handle word selection
   const handleSelectWord = useCallback(
-    async (wordStr: string) => {
+    async (wordStr: string, languageHint?: string) => {
       // 1. Check curated list
       const local = getCuratedWordById(wordStr);
       if (local) {
@@ -65,18 +65,18 @@ export default function App() {
       // 2. Fetch external dictionary or run comparative reconstruction
       setIsLoadingWord(true);
       try {
-        const ext = await fetchExternalWord(wordStr);
+        const ext = await fetchExternalWord(wordStr, languageHint);
         if (ext) {
           setSelectedWord(ext);
           addToHistory(ext);
         } else {
-          const fallbackEntry = reconstructEtymology(wordStr);
+          const fallbackEntry = reconstructEtymology(wordStr, undefined, languageHint);
           setSelectedWord(fallbackEntry);
           addToHistory(fallbackEntry);
         }
       } catch (err) {
         console.warn('Word resolution error, generating comparative reconstruction:', err);
-        const fallbackEntry = reconstructEtymology(wordStr);
+        const fallbackEntry = reconstructEtymology(wordStr, undefined, languageHint);
         setSelectedWord(fallbackEntry);
         addToHistory(fallbackEntry);
       } finally {

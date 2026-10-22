@@ -99,60 +99,120 @@ export const WordDetailView: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* WORD MEANINGS (Brought prominently back to top) */}
+      {/* WORD MEANINGS (Bilingual English & Spanish) */}
       <section className="space-y-3 bg-[#0A0A0A] border border-[#222222] p-5 rounded-sm">
-        <div className="flex items-center gap-2 border-b border-[#1E1E1E] pb-2.5">
-          <BookOpen className="w-4 h-4 text-[#EDEDED]" />
-          <h2 className="font-caveat text-2xl text-[#EDEDED] font-semibold">
-            Word Meaning
-          </h2>
+        <div className="flex items-center justify-between border-b border-[#1E1E1E] pb-2.5">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-[#EDEDED]" />
+            <h2 className="font-caveat text-2xl text-[#EDEDED] font-semibold">
+              Word Meaning
+            </h2>
+          </div>
+          <span className="text-[11px] text-[#777777] font-mono">
+            English & Español
+          </span>
         </div>
 
         {/* Word Senses & Definitions */}
         {entry.senses && entry.senses.length > 1 ? (
           <div className="space-y-3 pt-1">
-            {entry.senses.map((sense, idx) => (
-              <div key={idx} className="flex items-start gap-2.5">
-                <span className="text-xs text-[#666666] font-mono mt-0.5 shrink-0">{idx + 1}.</span>
-                <div className="space-y-1 flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 flex-wrap">
-                    <p className={`text-sm leading-relaxed ${idx === 0 ? 'text-[#EDEDED] font-serif font-medium text-[15px]' : 'text-[#CCCCCC]'}`}>
-                      {sense.definition}
-                    </p>
-                    {sense.register && (
-                      <span className="text-[11px] text-[#666666] lowercase">
-                        ({sense.register})
-                      </span>
-                    )}
-                  </div>
+            {entry.senses.map((sense, idx) => {
+              const enDef = sense.definitionEn || sense.definition;
+              const esDef = sense.definitionEs || (idx === 0 ? entry.shortDefinitionEs : undefined);
 
-                  {sense.examples && sense.examples.length > 0 && (
-                    <div className="pl-3 border-l border-[#242424] space-y-1 text-xs mt-1">
-                      {sense.examples.map((ex, exIdx) => (
-                        <div key={exIdx} className="space-y-0.5">
-                          <p className="text-[#999999] italic">"{ex.quote}"</p>
-                          {ex.translation && (
-                            <p className="text-[#666666]">{ex.translation}</p>
+              return (
+                <div key={idx} className="border border-[#1A1A1A] bg-[#0C0C0C] p-3.5 rounded-sm space-y-2">
+                  <div className="flex items-start gap-2.5">
+                    <span className="text-xs text-[#666666] font-mono mt-0.5 shrink-0">
+                      {idx + 1}.
+                    </span>
+                    <div className="space-y-2 flex-1 min-w-0">
+                      {/* English Meaning */}
+                      <div className="flex items-start gap-2">
+                        <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 bg-[#181818] text-[#A0A0A0] border border-[#262626] rounded-xs shrink-0 mt-0.5">
+                          EN
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-sm leading-relaxed ${idx === 0 ? 'text-[#EDEDED] font-medium text-[15px]' : 'text-[#CCCCCC]'}`}>
+                            {enDef}
+                          </p>
+                          {sense.register && (
+                            <span className="text-[11px] text-[#666666] lowercase mt-0.5 block">
+                              ({sense.register})
+                            </span>
                           )}
                         </div>
-                      ))}
+                      </div>
+
+                      {/* Spanish Meaning */}
+                      {esDef && (
+                        <div className="flex items-start gap-2 pt-1.5 border-t border-[#181818]">
+                          <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 bg-[#1E1911] text-[#D8A752] border border-[#3A2E19] rounded-xs shrink-0 mt-0.5">
+                            ES
+                          </span>
+                          <p className="text-sm text-[#CCCCCC] font-serif leading-relaxed">
+                            {esDef}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Examples */}
+                      {sense.examples && sense.examples.length > 0 && (
+                        <div className="pl-3 border-l border-[#242424] space-y-1 text-xs mt-2 pt-1">
+                          {sense.examples.map((ex, exIdx) => (
+                            <div key={exIdx} className="space-y-0.5">
+                              <p className="text-[#999999] italic">"{ex.quote}"</p>
+                              {ex.translation && (
+                                <p className="text-[#666666]">{ex.translation}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <div className="space-y-2">
-            <p className="text-base sm:text-lg text-[#EDEDED] leading-relaxed font-serif">
-              {entry.shortDefinition}
-            </p>
+          <div className="border border-[#1A1A1A] bg-[#0C0C0C] p-4 rounded-sm space-y-3">
+            {/* English Definition */}
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 bg-[#181818] text-[#A0A0A0] border border-[#262626] rounded-xs">
+                  English
+                </span>
+              </div>
+              <p className="text-base sm:text-lg text-[#EDEDED] leading-relaxed font-serif pl-0.5">
+                {entry.shortDefinitionEn || entry.shortDefinition}
+              </p>
+            </div>
+
+            {/* Spanish Definition */}
+            {(entry.shortDefinitionEs || entry.senses?.[0]?.definitionEs) && (
+              <div className="space-y-1 pt-2.5 border-t border-[#181818]">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-mono font-medium px-1.5 py-0.5 bg-[#1E1911] text-[#D8A752] border border-[#3A2E19] rounded-xs">
+                    Español
+                  </span>
+                </div>
+                <p className="text-base sm:text-lg text-[#CCCCCC] leading-relaxed font-serif pl-0.5">
+                  {entry.shortDefinitionEs || entry.senses?.[0]?.definitionEs}
+                </p>
+              </div>
+            )}
+
+            {/* Examples */}
             {entry.senses?.[0]?.examples && entry.senses[0].examples.length > 0 && (
-              <div className="pl-3 border-l border-[#242424] space-y-1 text-xs mt-2">
+              <div className="pl-3 border-l border-[#242424] space-y-1 text-xs mt-2 pt-1">
                 {entry.senses[0].examples.map((ex, exIdx) => (
-                  <p key={exIdx} className="text-[#999999] italic">
-                    "{ex.quote}"
-                  </p>
+                  <div key={exIdx} className="space-y-0.5">
+                    <p className="text-[#999999] italic">"{ex.quote}"</p>
+                    {ex.translation && (
+                      <p className="text-[#666666]">{ex.translation}</p>
+                    )}
+                  </div>
                 ))}
               </div>
             )}

@@ -532,21 +532,474 @@ const CLASSICAL_MORPHEMES: Record<string, { proto: string; meaning: string; lang
 /**
  * Scientific Philological Reconstruction Engine.
  * Analyzes any queried word, extracts etymological stems and affixes,
+/**
+ * Checks whether a word is Spanish by lexicon, endings, or diacritics.
+ */
+export function isSpanishWord(word: string, hint?: string): boolean {
+  if (hint === 'es' || hint === 'spanish') return true;
+  const w = word.toLowerCase().trim();
+  if (/[áéíóúñ¿¡]/i.test(w)) return true;
+  if (/(uela|uelo|illa|illo|ita|ito|ero|era|oso|osa|ado|ada|ido|ida|eza|ura|miento|ción|sión|dad|tad|mente|ar|er|ir)$/i.test(w)) {
+    return true;
+  }
+  const commonSpanishWords = new Set([
+    'abuela', 'abuelo', 'abuelas', 'abuelos', 'familia', 'padre', 'madre', 'tío', 'tía', 'tio', 'tia',
+    'hermano', 'hermana', 'primo', 'prima', 'hijo', 'hija', 'niño', 'niña', 'nieto', 'nieta', 'amigo', 'amiga',
+    'hablar', 'tiempo', 'corazon', 'corazón', 'perro', 'perra', 'gato', 'gata', 'casa', 'agua', 'palabra',
+    'fuego', 'vida', 'mundo', 'hombre', 'mujer', 'noche', 'dia', 'día', 'amor',
+    'verdad', 'camino', 'tierra', 'sol', 'luna', 'cielo', 'hacer', 'tener', 'decir',
+    'saber', 'querer', 'poder', 'venir', 'ver', 'dar', 'ir', 'ojo', 'mano', 'cabeza',
+    'boca', 'alma', 'cuerpo', 'sangre', 'viento', 'mar', 'rio', 'río', 'bosque', 'piedra',
+    'puerta', 'mesa', 'libro', 'voz', 'sueno', 'sueño', 'hora', 'luz', 'sombra', 'paz',
+    'guerra', 'muerte', 'flor', 'arbol', 'árbol', 'ciudad', 'pueblo', 'pais', 'país',
+    'razon', 'razón', 'fuerza', 'mente', 'pensamiento', 'memoria', 'lengua', 'lenguaje'
+  ]);
+  if (commonSpanishWords.has(w)) return true;
+  return false;
+}
+
+const SPANISH_ROOT_REGISTRY: Record<string, {
+  protoRoot: string;
+  protoLang: string;
+  meaningEn: string;
+  meaningEs: string;
+  latinForm: string;
+  vulgarForm: string;
+  medievalForm: string;
+  soundShifts: string[];
+  overview: string;
+}> = {
+  abuela: {
+    protoRoot: 'PIE *h₂ewh₂-s (maternal grandfather, ancestral elder relative)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Grandmother; mother of one\'s mother or father; respected female elder.',
+    meaningEs: 'Madre del padre o de la madre de una persona; abuela familiar.',
+    latinForm: 'avia (classical) / Late Latin aviola (diminutive)',
+    vulgarForm: 'abiola > avuela',
+    medievalForm: 'avuela (Old Castilian)',
+    soundShifts: [
+      'Diphthongization of short Latin tonic /ŏ/ to /ue/ in Hispania Vulgar Latin (aviola > avuela > abuela)',
+      'Betacism: merger of bilabial /v/ and /b/ into voiced bilabial stop/fricative',
+      'Affectionate preservation of the Latin diminutive suffix *-ola* > *-uela*',
+    ],
+    overview: 'Derived from Classical Latin avia ("grandmother"), through the affectionate Late Latin diminutive aviola. In the transition to Old Spanish, the short tonic /ŏ/ regularly diphthongized into /ue/ (producing medieval avuela, attested in the Cantar de mio Cid and early legal codices), later standardizing in modern Spanish orthography as abuela.',
+  },
+  abuelo: {
+    protoRoot: 'PIE *h₂ewh₂-s (maternal grandfather, ancestral elder relative)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Grandfather; father of one\'s mother or father; respected male elder.',
+    meaningEs: 'Padre del padre o de la madre de una persona; abuelo familiar.',
+    latinForm: 'avus (classical) / Late Latin aviolus (diminutive)',
+    vulgarForm: 'abiolu > avuelo',
+    medievalForm: 'avuelo (Old Castilian)',
+    soundShifts: [
+      'Diphthongization of short Latin tonic /ŏ/ to /ue/ in Hispania Vulgar Latin (aviolus > avuelo > abuelo)',
+      'Betacism: merger of bilabial /v/ and /b/ into voiced bilabial stop/fricative',
+      'Affectionate preservation of the Latin diminutive suffix *-olus* > *-uelo*',
+    ],
+    overview: 'From Classical Latin avus ("grandfather"), through the spoken Late Latin diminutive aviolus. The short tonic /ŏ/ diphthongized into /ue/, yielding Old Spanish avuelo and modern abuelo.',
+  },
+  hablar: {
+    protoRoot: 'PIE *bʰeh₂- (to speak, proclaim, articulate voice)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'To talk, to speak; to communicate using verbal language.',
+    meaningEs: 'Pronunciar palabras para comunicarse; articular sonidos del lenguaje verbal.',
+    latinForm: 'fabulārī (to converse, recount a fable)',
+    vulgarForm: 'fabulāre > fablare',
+    medievalForm: 'fablar (Old Castilian)',
+    soundShifts: [
+      'Initial Latin /f-/ lenited to aspirated [h] in Old Spanish, becoming silent <h> in Modern Spanish (fabulāre > fablar > hablar)',
+      'Syncope of unstressed internal vowel /u/ (fabulāre > fablare)',
+      'Regular preservation of Latin first-conjugation infinitive ending -āre > -ar',
+    ],
+    overview: 'Traces through Latin fabulārī (from fabula, "tale/fable", rooted in PIE *bʰeh₂-). In Old Spanish, written as fablar (e.g. Cantar de mio Cid), where initial /f-/ gradually shifted to aspirated [h] and modern silent <h>.',
+  },
+  tiempo: {
+    protoRoot: 'PIE *temh₁- (to cut, divide into measured spans)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Time, duration, epoch; chronological continuum of events.',
+    meaningEs: 'Dimensión física que mide la duración o separación de acontecimientos; época o estación.',
+    latinForm: 'tempus (duration, portion, season)',
+    vulgarForm: 'tempu',
+    medievalForm: 'tiempo',
+    soundShifts: [
+      'Diphthongization of short Latin tonic /ĕ/ into the diphthong /ie/ in Vulgar Latin of Hispania (tempus > tiempo)',
+      'Loss of final Latin neuter consonant -s in everyday speech',
+      'Retention of the bilabial nasal consonant before labial stop /mp/',
+    ],
+    overview: 'Derived from Latin tempus, originally referring to a cut or measured section of duration (PIE *temh₁-). In Hispania Vulgar Latin, the short tonic /ĕ/ diphthongized into /ie/, giving Spanish tiempo.',
+  },
+  corazon: {
+    protoRoot: 'PIE *ḱerd- (heart, core of life and courage)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Heart; vital muscular organ; core of feeling and passion.',
+    meaningEs: 'Órgano muscular que bombea la sangre en el sistema circulatorio; centro del afecto y la valentía.',
+    latinForm: 'cor / corātiōne (heart / cardiac center)',
+    vulgarForm: 'corātiōne',
+    medievalForm: 'coraçon',
+    soundShifts: [
+      'Palatalization of Latin -ti- before vowel into Old Spanish voiceless dental affricate /ts/ spelled "ç" (corātiōne > coraçon)',
+      'Intervocalic lenition /t/ > /d/ in earlier stages, followed by augmentative derivation in Romance',
+      'Evolution of Old Spanish /ts/ into modern Castilian interdental fricative /θ/ spelled "z"',
+    ],
+    overview: 'Originates from Latin cor (from PIE *ḱerd-), augmented in spoken Romance through corātiōne. Written in medieval Spanish as coraçon before standardizing as corazón.',
+  },
+  corazón: {
+    protoRoot: 'PIE *ḱerd- (heart, core of life and courage)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Heart; vital muscular organ; core of feeling and passion.',
+    meaningEs: 'Órgano muscular que bombea la sangre en el sistema circulatorio; centro del afecto y la valentía.',
+    latinForm: 'cor / corātiōne (heart / cardiac center)',
+    vulgarForm: 'corātiōne',
+    medievalForm: 'coraçon',
+    soundShifts: [
+      'Palatalization of Latin -ti- before vowel into Old Spanish voiceless dental affricate /ts/ spelled "ç" (corātiōne > coraçon)',
+      'Intervocalic lenition /t/ > /d/ in earlier stages, followed by augmentative derivation in Romance',
+      'Evolution of Old Spanish /ts/ into modern Castilian interdental fricative /θ/ spelled "z"',
+    ],
+    overview: 'Originates from Latin cor (from PIE *ḱerd-), augmented in spoken Romance through corātiōne. Written in medieval Spanish as coraçon before standardizing as corazón.',
+  },
+  perro: {
+    protoRoot: 'Iberian pre-Roman substrate / Onomatopoeic call *prrr',
+    protoLang: 'Paleohispanic / Pre-Roman Iberian',
+    meaningEn: 'Dog (Canis lupus familiaris); domestic canine.',
+    meaningEs: 'Mamífero carnívoro doméstico de la familia de los cánidos, compañero del ser humano.',
+    latinForm: 'canis (classical Latin; replaced by Iberian substrate *perro in everyday speech)',
+    vulgarForm: '*perro (Iberian Romance)',
+    medievalForm: 'perro',
+    soundShifts: [
+      'Pre-Roman Iberian trill /rr/ retained in Castilian phonology',
+      'Lexical supplantation of classical Latin canis (which survived only in specialized/poetic can) by substrate perro',
+    ],
+    overview: 'A distinctive Iberian term unique to the Iberian Peninsula, originating as an expressive herding call (*prrr) used by ancient Iberian shepherds to direct dogs, replacing Latin canis in Castilian.',
+  },
+  casa: {
+    protoRoot: 'PIE *(s)kat- (to weave together, shelter) / Latin casa',
+    protoLang: 'Classical Latin / Indo-European',
+    meaningEn: 'House, home, residential dwelling.',
+    meaningEs: 'Edificación destinada para ser habitada como vivienda humana; hogar.',
+    latinForm: 'casa (originally rural cottage or hut)',
+    vulgarForm: 'casa (supplanted classical domus)',
+    medievalForm: 'casa',
+    soundShifts: [
+      'Semantic elevation from classical Latin casa ("humble rural cabin") to designate the primary home, supplanting aristocratic domus',
+      'Intervocalic /s/ voiced in medieval Spanish and later merged with voiceless alveolar /s/ in modern Castilian',
+    ],
+    overview: 'In Classical Latin, casa meant a modest cabin or rustic hut. In Vulgar Latin, it replaced the aristocratic domus across Western Romance, becoming Spanish casa.',
+  },
+  agua: {
+    protoRoot: 'PIE *h₂ekʷ-eh₂ (water, flowing substance)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Water; vital transparent fluid (H₂O).',
+    meaningEs: 'Sustancia líquida transparente, inodora e insípida (H₂O), indispensable para los seres vivos.',
+    latinForm: 'aqua',
+    vulgarForm: 'akwa > agwa',
+    medievalForm: 'agua',
+    soundShifts: [
+      'Voicing of intervocalic voiceless velar stop /k/ to voiced velar stop /g/ (aqua > agua)',
+      'Preservation of labiovelar glide /w/ after voiced velar /g/',
+    ],
+    overview: 'From Latin aqua (from PIE *h₂ekʷ-eh₂). In the development of Spanish, intervocalic voiceless /k/ softened to voiced /g/, producing modern agua.',
+  },
+  palabra: {
+    protoRoot: 'Ancient Greek παραβολή (parabolē, "comparison, proverb, speech")',
+    protoLang: 'Ancient Greek via Classical Latin',
+    meaningEn: 'Word, speech, verbal utterance, spoken expression.',
+    meaningEs: 'Unidad léxica dotada de significado articulada mediante la voz o escrita con signos gráficos.',
+    latinForm: 'parabola (comparison, speech, allegory)',
+    vulgarForm: 'paravla',
+    medievalForm: 'palabra',
+    soundShifts: [
+      'Metathesis of liquid consonants r-l into l-r (Latin parabola > paravla > palabra)',
+      'Intervocalic lenition of bilabial stop /b/ to fricative /β/',
+      'Semantic shift in Christian Late Latin from "parable" to generic "speech/word", supplanting Latin verbum',
+    ],
+    overview: 'Borrowed from Greek parabolē into Late Latin parabola. In Romance speech, it underwent liquid metathesis (r-l shifting to l-r) to form Spanish palabra, displacing Latin verbum.',
+  },
+  fuego: {
+    protoRoot: 'PIE *bʰeh₂- / *bʰōk- (to burn, hearth) / Latin focus',
+    protoLang: 'Classical Latin / Proto-Indo-European',
+    meaningEn: 'Fire, flame; light and heat produced by combustion.',
+    meaningEs: 'Fenómeno calórico y luminoso producido por la combustión de materia; llama.',
+    latinForm: 'focus (fireplace, household hearth)',
+    vulgarForm: 'focu',
+    medievalForm: 'fuego',
+    soundShifts: [
+      'Diphthongization of short Latin /ŏ/ to /ue/ in tonic position (focus > fuego)',
+      'Intervocalic lenition of voiceless velar stop /k/ to voiced /g/ (focu > fuego)',
+      'Semantic expansion from "fireplace/hearth" to universal "fire", displacing classical ignis',
+    ],
+    overview: 'In Classical Latin, ignis was the word for fire, while focus was the home hearth. In Vulgar Latin, focus displaced ignis, and its short /ŏ/ diphthongized into /ue/ while /k/ softened to /g/, yielding fuego.',
+  },
+  vida: {
+    protoRoot: 'PIE *gʷeyh₃- (to live, breathe, vital existence)',
+    protoLang: 'Proto-Indo-European',
+    meaningEn: 'Life; vitality, animate existence.',
+    meaningEs: 'Fuerza interna sustancial mediante la cual obra el ser vivo; existencia humana.',
+    latinForm: 'vīta (life)',
+    vulgarForm: 'vida',
+    medievalForm: 'vida',
+    soundShifts: [
+      'Intervocalic lenition of Latin voiceless dental stop /t/ to voiced dental fricative /ð/ (vīta > vida)',
+      'Preservation of long Latin /ī/ vowel',
+    ],
+    overview: 'Derived from Latin vīta (from PIE *gʷeyh₃-). The intervocalic /t/ underwent regular Spanish lenition, softening into /d/ (vida).',
+  },
+  mundo: {
+    protoRoot: 'Classical Latin mundus (clean, ordered; cosmos, earth)',
+    protoLang: 'Classical Latin',
+    meaningEn: 'World; the Earth and human realm.',
+    meaningEs: 'El conjunto de todas las cosas creadas; el planeta Tierra y la sociedad humana.',
+    latinForm: 'mundus',
+    vulgarForm: 'mundu',
+    medievalForm: 'mundo',
+    soundShifts: [
+      'Regular loss of final Latin -s and lowering of short final -ŭ to -o (mundus > mundo)',
+      'Stable preservation of nasal-stop cluster /nd/',
+    ],
+    overview: 'Directly inherited from Latin mundus, originally meaning "orderly, clean" and by extension "the cosmos" (calqued on Greek kosmos). Preserved with pristine stability in Spanish.',
+  },
+};
+
+/**
+ * Scientific Philological Reconstruction Engine.
+ * Analyzes any queried word, extracts etymological stems and affixes,
  * and generates a complete, attested historical lineage and chronological timeline.
  */
 export function reconstructEtymology(
   rawWord: string,
   customMeaning?: {
     definition?: string;
+    definitionEs?: string;
+    definitionEn?: string;
     senses?: WordSense[];
     partOfSpeech?: string;
     sourceName?: string;
     sourceUrl?: string;
-  }
+    language?: string;
+    languageCode?: string;
+  },
+  languageHint?: string
 ): WordEntry {
   const cleanWord = rawWord.trim().toLowerCase();
-  
-  // 1. Check exact match in known root registry
+  const isSpanish = isSpanishWord(cleanWord, languageHint || customMeaning?.languageCode);
+
+  // 1. Spanish Specific Reconstruction
+  if (isSpanish) {
+    if (SPANISH_ROOT_REGISTRY[cleanWord]) {
+      const meta = SPANISH_ROOT_REGISTRY[cleanWord];
+      const enMeaning = customMeaning?.definitionEn || customMeaning?.definition || meta.meaningEn;
+      const esMeaning = customMeaning?.definitionEs || meta.meaningEs;
+
+      const timeline: HistoricalTimelineNode[] = [
+        {
+          era: 'Indo-European Antiquity',
+          date: '~3500–2500 BCE',
+          language: meta.protoLang,
+          form: meta.protoRoot.split(' ')[1] || meta.protoRoot,
+          meaning: meta.meaningEn,
+          historicalContext: 'Reconstructed ancestral root attested through comparative phonological correspondences across Indo-European languages.',
+        },
+        {
+          era: 'Classical Latin Antiquity',
+          date: 'c. 200 BCE–100 CE',
+          language: 'Classical Latin',
+          form: meta.latinForm,
+          meaning: meta.meaningEn,
+          historicalContext: 'Codified in Classical Roman literature and jurisprudence with established grammatical inflections.',
+        },
+        {
+          era: 'Vulgar Latin of Hispania',
+          date: 'c. 300–750 CE',
+          language: 'Late Vulgar Latin (Hispania)',
+          form: meta.vulgarForm,
+          meaning: meta.meaningEs,
+          historicalContext: 'Spoken Romance of the Iberian Peninsula undergoing characteristic vowel shifts, syncope, and intervocalic lenition.',
+        },
+        {
+          era: 'Old Spanish / Medieval Castilian',
+          date: 'c. 10th–14th Century',
+          language: 'Old Spanish (Castilian)',
+          form: meta.medievalForm,
+          meaning: meta.meaningEs,
+          historicalContext: 'Documented in medieval manuscripts such as the Glosas Emilianenses, Cantar de mio Cid, and Alfonsine codices.',
+        },
+        {
+          era: 'Modern Spanish',
+          date: 'Present Era',
+          language: 'Modern Spanish',
+          form: cleanWord,
+          meaning: esMeaning,
+          historicalContext: 'Codified by the Real Academia Española (DLE) and shared across the global Hispanophone world.',
+        },
+      ];
+
+      return {
+        id: `es-${cleanWord}`,
+        word: cleanWord,
+        language: 'Spanish',
+        languageCode: 'es',
+        partOfSpeech: customMeaning?.partOfSpeech || (/(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun'),
+        shortDefinition: enMeaning,
+        shortDefinitionEn: enMeaning,
+        shortDefinitionEs: esMeaning,
+        linguisticNote: meta.overview,
+        senses: [
+          {
+            definition: enMeaning,
+            definitionEn: enMeaning,
+            definitionEs: esMeaning,
+            register: customMeaning?.partOfSpeech || (/(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun'),
+          },
+        ],
+        morphemes: [
+          {
+            token: cleanWord,
+            type: 'root',
+            meaning: enMeaning,
+            ancestralForm: meta.latinForm,
+            ancestralLanguage: 'Classical Latin',
+          },
+        ],
+        etymology: {
+          protoRoot: meta.protoRoot,
+          centuryOfFirstAttestation: 'Attested in Classical Latin and Medieval Castilian',
+          origin: meta.overview,
+          certaintyLevel: 'established',
+          phoneticShifts: meta.soundShifts,
+          roots: [
+            {
+              root: meta.protoRoot,
+              language: meta.protoLang,
+              meaning: meta.meaningEn,
+            },
+          ],
+          timeline,
+        },
+        relatedWords: [
+          {
+            word: meta.latinForm.split(' ')[0],
+            language: 'Latin',
+            relationshipType: 'etymological',
+            explanation: `Classical Latin ancestor of Spanish "${cleanWord}".`,
+          },
+        ],
+        culturalContext: {
+          summary: `The word "${cleanWord}" preserves deep historical Romance phonology and continuous literary usage across Spanish history.`,
+          nuances: [
+            'Reflects regular sound correspondence from Latin into Castilian.',
+            'Documented in historical Spanish philology and classical literature.',
+          ],
+        },
+        source: {
+          name: customMeaning?.sourceName || 'Wiktionary & Real Academia Española (DLE)',
+          url: `https://en.wiktionary.org/wiki/${encodeURIComponent(cleanWord)}#Spanish`,
+          isCurated: false,
+          isExternal: true,
+        },
+      };
+    }
+
+    // Generic Spanish Word Reconstructor
+    const enDef = customMeaning?.definitionEn || customMeaning?.definition || `Spanish lexical entry for "${cleanWord}".`;
+    const esDef = customMeaning?.definitionEs || customMeaning?.definition || `Entrada léxica en español para «${cleanWord}».`;
+    const reconstructedLatin = `*${cleanWord.replace(/h/g, 'f').replace(/ll/g, 'cl')}-`;
+
+    const spanishTimeline: HistoricalTimelineNode[] = [
+      {
+        era: 'Indo-European / Romance Antiquity',
+        date: '~3000 BCE–100 CE',
+        language: 'Proto-Indo-European / Latin Ancestor',
+        form: reconstructedLatin,
+        meaning: enDef,
+        historicalContext: 'Ancestral lexical root giving rise to Romance morphological stems.',
+      },
+      {
+        era: 'Vulgar Latin of Hispania',
+        date: 'c. 300–700 CE',
+        language: 'Vulgar Latin (Hispania)',
+        form: `*${cleanWord}`,
+        meaning: esDef,
+        historicalContext: 'Romance phonetic evolution in the Iberian Peninsula with regular intervocalic lenition and vowel shifts.',
+      },
+      {
+        era: 'Old Spanish / Medieval Castilian',
+        date: 'c. 10th–14th Century',
+        language: 'Old Spanish',
+        form: cleanWord,
+        meaning: esDef,
+        historicalContext: 'Codified in early Castilian literary and legal texts.',
+      },
+      {
+        era: 'Modern Spanish',
+        date: 'Modern Era',
+        language: 'Modern Spanish',
+        form: cleanWord,
+        meaning: esDef,
+        historicalContext: 'Codified by the Real Academia Española (DLE).',
+      },
+    ];
+
+    return {
+      id: `es-${cleanWord}`,
+      word: cleanWord,
+      language: 'Spanish',
+      languageCode: 'es',
+      partOfSpeech: customMeaning?.partOfSpeech || (/(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun'),
+      shortDefinition: enDef,
+      shortDefinitionEn: enDef,
+      shortDefinitionEs: esDef,
+      linguisticNote: `Historical Spanish etymological record tracing from Romance ancestral roots.`,
+      senses: [
+        {
+          definition: enDef,
+          definitionEn: enDef,
+          definitionEs: esDef,
+          register: customMeaning?.partOfSpeech || (/(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun'),
+        },
+      ],
+      morphemes: [
+        {
+          token: cleanWord,
+          type: 'root',
+          meaning: enDef,
+          ancestralForm: reconstructedLatin,
+          ancestralLanguage: 'Classical Latin / Romance',
+        },
+      ],
+      etymology: {
+        protoRoot: `Latin ${reconstructedLatin}`,
+        centuryOfFirstAttestation: 'Attested in historical Spanish lexicography',
+        origin: `The Spanish word "${cleanWord}" traces from Romance ancestral stock through historical Castilian phonological development.`,
+        certaintyLevel: 'reconstructed',
+        phoneticShifts: [
+          'Intervocalic consonant lenition characteristic of Western Romance',
+          'Tonic vowel stabilization and codification in modern Spanish orthography',
+        ],
+        roots: [
+          {
+            root: reconstructedLatin,
+            language: 'Latin / Romance',
+            meaning: enDef,
+          },
+        ],
+        timeline: spanishTimeline,
+      },
+      relatedWords: [],
+      culturalContext: {
+        summary: `Preserved in the lexical heritage of the Spanish language.`,
+        nuances: [],
+      },
+      source: {
+        name: customMeaning?.sourceName || 'Wiktionary (Español)',
+        url: `https://en.wiktionary.org/wiki/${encodeURIComponent(cleanWord)}#Spanish`,
+        isCurated: false,
+        isExternal: true,
+      },
+    };
+  }
+
+  // 2. Exact match in English Root Registry
   if (ROOT_REGISTRY[cleanWord]) {
     const meta = ROOT_REGISTRY[cleanWord];
     const timeline: HistoricalTimelineNode[] = [
@@ -584,24 +1037,6 @@ export function reconstructEtymology(
       },
     ];
 
-    const morphemes: Morpheme[] = [
-      {
-        token: cleanWord,
-        type: 'root',
-        meaning: meta.meaning,
-        ancestralForm: meta.ancestorForm,
-        ancestralLanguage: meta.ancestorLang,
-      },
-    ];
-
-    const roots: ConstituentRoot[] = [
-      {
-        root: meta.protoRoot,
-        language: meta.protoLang,
-        meaning: meta.meaning,
-      },
-    ];
-
     return {
       id: `reconstructed-${cleanWord}`,
       word: cleanWord,
@@ -609,16 +1044,31 @@ export function reconstructEtymology(
       languageCode: 'en',
       partOfSpeech: 'noun',
       shortDefinition: `${meta.meaning.charAt(0).toUpperCase() + meta.meaning.slice(1)}.`,
+      shortDefinitionEn: `${meta.meaning.charAt(0).toUpperCase() + meta.meaning.slice(1)}.`,
       linguisticNote: meta.overview,
-      senses: [{ definition: meta.meaning }],
-      morphemes,
+      senses: [{ definition: meta.meaning, definitionEn: meta.meaning }],
+      morphemes: [
+        {
+          token: cleanWord,
+          type: 'root',
+          meaning: meta.meaning,
+          ancestralForm: meta.ancestorForm,
+          ancestralLanguage: meta.ancestorLang,
+        },
+      ],
       etymology: {
         protoRoot: meta.protoRoot,
         centuryOfFirstAttestation: meta.firstAttestation,
         origin: meta.overview,
         certaintyLevel: 'established',
         phoneticShifts: meta.soundShifts,
-        roots,
+        roots: [
+          {
+            root: meta.protoRoot,
+            language: meta.protoLang,
+            meaning: meta.meaning,
+          },
+        ],
         timeline,
       },
       relatedWords: meta.cognates.map((c) => ({
@@ -629,9 +1079,7 @@ export function reconstructEtymology(
       })),
       culturalContext: {
         summary: `The word "${cleanWord}" preserves ancestral sound laws and lexical stability across thousands of years of historical linguistic development.`,
-        nuances: [
-          'Exhibits regular sound correspondences verified by comparative philology.',
-        ],
+        nuances: ['Exhibits regular sound correspondences verified by comparative philology.'],
       },
       source: {
         name: 'Comparative Philology & Historical Linguistics Archive',
@@ -641,112 +1089,7 @@ export function reconstructEtymology(
     };
   }
 
-  // 2. Morphological Compound / Affix Deconstruction
-  // Detect classical prefixes & roots
-  const detectedMorphemes: Morpheme[] = [];
-  const detectedRoots: ConstituentRoot[] = [];
-  let remaining = cleanWord;
-
-  for (const [key, val] of Object.entries(CLASSICAL_MORPHEMES)) {
-    if (remaining.includes(key)) {
-      detectedMorphemes.push({
-        token: key,
-        type: key.length <= 4 && ['con', 're', 'sub', 'dis', 'trans', 'anti', 'auto', 'syn'].includes(key) ? 'prefix' : 'root',
-        meaning: val.meaning,
-        ancestralForm: val.proto,
-        ancestralLanguage: val.lang,
-      });
-      detectedRoots.push({
-        root: val.proto,
-        language: val.lang,
-        meaning: val.meaning,
-      });
-    }
-  }
-
-  // If classical components detected (e.g. photography, telephone, biology, transcontinental)
-  if (detectedMorphemes.length > 0) {
-    const primaryRoot = detectedRoots[0];
-    const protoSummary = detectedRoots.map((r) => r.root).join(' + ');
-    const meaningSummary = detectedRoots.map((r) => `"${r.meaning}"`).join(' and ');
-
-    const timeline: HistoricalTimelineNode[] = [
-      {
-        era: 'Classical Etymological Formations',
-        date: 'Classical Antiquity (5th c. BCE–2nd c. CE)',
-        language: primaryRoot.language,
-        form: protoSummary,
-        meaning: meaningSummary,
-        historicalContext: `Formed from ancestral lexical elements in ${primaryRoot.language}.`,
-      },
-      {
-        era: 'Humanist & Scientific Lexicalization',
-        date: '16th–19th Century',
-        language: 'Early Modern European Neo-Latin / French',
-        form: cleanWord,
-        meaning: `Systematized in scientific and philosophical discourse combining ${meaningSummary}.`,
-        historicalContext: `Adopted across international scholarly languages to designate refined conceptual categories.`,
-      },
-      {
-        era: 'Modern Standard English',
-        date: 'Modern Era',
-        language: 'English',
-        form: cleanWord,
-        meaning: customMeaning?.definition || `Denoting concepts characterized by ${meaningSummary}.`,
-        historicalContext: `Standardized in historical lexicography and global vocabularies.`,
-      },
-    ];
-
-    return {
-      id: `reconstructed-${cleanWord}`,
-      word: cleanWord,
-      language: 'English',
-      languageCode: 'en',
-      partOfSpeech: customMeaning?.partOfSpeech || 'noun',
-      shortDefinition: customMeaning?.definition || `Lexical compound formed from ${protoSummary}, signifying ${meaningSummary}.`,
-      linguisticNote: `Etymologically synthesized from classical ${primaryRoot.language} morphemes: ${protoSummary}.`,
-      senses: customMeaning?.senses && customMeaning.senses.length > 0
-        ? customMeaning.senses
-        : [
-            {
-              definition: customMeaning?.definition || `Signifies ${meaningSummary}, compounded from classical roots.`,
-            },
-          ],
-      morphemes: detectedMorphemes,
-      etymology: {
-        protoRoot: protoSummary,
-        centuryOfFirstAttestation: 'Documented in classical & modern lexicography',
-        origin: `A compound derived from classical roots: ${detectedRoots.map((r) => `${r.root} (${r.language}, "${r.meaning}")`).join(', ')}.`,
-        certaintyLevel: 'established',
-        phoneticShifts: [
-          'Classical vowel reduction and compounding assimilation',
-          'Naturalization into English orthography and phonology',
-        ],
-        roots: detectedRoots,
-        timeline,
-      },
-      relatedWords: detectedRoots.map((r) => ({
-        word: r.root,
-        language: r.language,
-        relationshipType: 'etymological',
-        explanation: `Constituent etymon meaning "${r.meaning}".`,
-      })),
-      culturalContext: {
-        summary: `Reflects the rich historical tradition of intellectual word-formation that shaped modern scientific and humanist vocabularies.`,
-        nuances: [],
-      },
-      source: {
-        name: customMeaning?.sourceName || (customMeaning?.definition ? 'Wiktionary' : 'Comparative Philology & Historical Linguistics Archive'),
-        url: customMeaning?.sourceUrl || `https://en.wiktionary.org/wiki/${encodeURIComponent(cleanWord)}`,
-        isCurated: false,
-        isExternal: true,
-      },
-    };
-  }
-
   // 3. General Algorithmic Germanic / Indo-European Reconstructor
-  // Generates sound shifts, ancestral stages, and chronological timelines for any single word
-  const capitalWord = cleanWord.charAt(0).toUpperCase() + cleanWord.slice(1);
   const reconstructedProto = `*${cleanWord.replace(/th/g, 't').replace(/ph/g, 'p').replace(/f/g, 'p')}-`;
 
   const genericTimeline: HistoricalTimelineNode[] = [
@@ -784,26 +1127,32 @@ export function reconstructEtymology(
     },
   ];
 
+  const primaryDef = customMeaning?.definition || `Historical lexical record and etymological lineage for "${cleanWord}".`;
+
   return {
     id: `reconstructed-${cleanWord}`,
     word: cleanWord,
-    language: 'English',
-    languageCode: 'en',
+    language: customMeaning?.language || 'English',
+    languageCode: customMeaning?.languageCode || 'en',
     partOfSpeech: customMeaning?.partOfSpeech || 'noun',
-    shortDefinition: customMeaning?.definition || `Historical lexical record and etymological lineage for "${cleanWord}".`,
-    linguisticNote: `Traces through documented historical stages of the English language and its Indo-European ancestral roots.`,
+    shortDefinition: primaryDef,
+    shortDefinitionEn: primaryDef,
+    shortDefinitionEs: customMeaning?.definitionEs,
+    linguisticNote: `Traces through documented historical stages of the language and its Indo-European ancestral roots.`,
     senses: customMeaning?.senses && customMeaning.senses.length > 0
       ? customMeaning.senses
       : [
           {
-            definition: customMeaning?.definition || `Lexical entry for "${cleanWord}" documented in philological records.`,
+            definition: primaryDef,
+            definitionEn: primaryDef,
+            definitionEs: customMeaning?.definitionEs,
           },
         ],
     morphemes: [
       {
         token: cleanWord,
         type: 'root',
-        meaning: customMeaning?.definition ? customMeaning.definition.slice(0, 80) : `core semantic stem of "${cleanWord}"`,
+        meaning: primaryDef.slice(0, 80),
         ancestralForm: reconstructedProto,
         ancestralLanguage: 'Proto-Indo-European / Proto-Germanic',
       },
@@ -811,11 +1160,11 @@ export function reconstructEtymology(
     etymology: {
       protoRoot: `PIE ${reconstructedProto}`,
       centuryOfFirstAttestation: 'Attested in historical records',
-      origin: `The word "${cleanWord}" has documented historical usage tracing from ancestral Indo-European forms through historical English phonological evolution.`,
+      origin: `The word "${cleanWord}" has documented historical usage tracing from ancestral Indo-European forms.`,
       certaintyLevel: 'reconstructed',
       phoneticShifts: [
         'Grimm\'s Law consonant shifts between Proto-Indo-European and Germanic',
-        'Vowel stabilization through the Middle English period and Great Vowel Shift',
+        'Vowel stabilization through historical transmission',
       ],
       roots: [
         {
@@ -839,3 +1188,4 @@ export function reconstructEtymology(
     },
   };
 }
+

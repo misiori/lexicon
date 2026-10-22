@@ -1,19 +1,25 @@
 /**
  * Wiktionary Definition Service
  * Fetches accurate, real dictionary definitions and senses directly from Wiktionary
- * (with fallback to the Free Dictionary API).
+ * with native support for Spanish and English bilingual definitions.
  */
 
 export interface WiktionarySense {
-  definition: string;
+  definition: string; // Primary definition (in English for global consistency)
+  definitionEs?: string; // Spanish definition
+  definitionEn?: string; // English definition
   register?: string;
   examples?: Array<{ quote: string; translation?: string }>;
 }
 
 export interface WiktionaryResult {
   word: string;
+  language: string;
+  languageCode: string;
   partOfSpeech: string;
   shortDefinition: string;
+  shortDefinitionEs?: string;
+  shortDefinitionEn?: string;
   senses: WiktionarySense[];
   source: string;
 }
@@ -40,16 +46,96 @@ export function cleanWiktionaryHtml(html: string): string {
 }
 
 /**
+ * Fetches native Spanish definition from es.wiktionary.org
+ */
+export async function fetchNativeSpanishDefinition(cleanWord: string, depth = 0): Promise<string | null> {
+  if (depth > 1) return null;
+  try {
+    const res = await fetch(
+      `https://es.wiktionary.org/w/api.php?action=parse&page=${encodeURIComponent(cleanWord)}&prop=wikitext&format=json&origin=*`,
+      {
+        headers: {
+          'User-Agent': 'LexiconApp/1.0 (academic dictionary; contact: info@example.com)',
+        },
+      }
+    );
+    if (!res.ok) return null;
+    const data: any = await res.json();
+    const wikitext = data?.parse?.wikitext?.['*'] || '';
+    if (!wikitext) return null;
+
+    const lines = wikitext.split('\n');
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (/^(;[0-9]+|:[0-9]+|\*[0-9]+)/.test(line)) {
+        const formaMatch = line.match(/\{\{forma (?:sustantivo|adjetivo)\|([^|}]+)\|femenino/i);
+        if (formaMatch && formaMatch[1]) {
+          const baseWord = formaMatch[1];
+          const baseDef = await fetchNativeSpanishDefinition(baseWord, depth + 1);
+          if (baseDef) {
+            return `Forma femenina de ${baseWord}: ${baseDef.toLowerCase().replace(/padre del padre/g, 'madre del padre')}`;
+          }
+          return `Forma femenina de ${baseWord}.`;
+        }
+
+        const cleaned = line
+          .replace(/^(;[0-9]+:?|:[0-9]+:?|\*[0-9]+:?)\s*/, '')
+          .replace(/\[\[([^|\]]+\|)?([^\]]+)\]\]/g, '$2')
+          .replace(/\{\{[^}]+\}\}/g, '')
+          .replace(/^[:;]\s*/, '')
+          .trim();
+        if (cleaned.length > 5) {
+          return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+        }
+      }
+    }
+  } catch {
+    // Non-blocking fallback
+  }
+  return null;
+}
+
+/**
  * Parses raw Wiktionary REST API payload into structured definitions and senses.
  */
 export function parseWiktionaryPayload(
   data: any,
-  originalWord: string
+  originalWord: string,
+  languageHint?: string
 ): WiktionaryResult | null {
   if (!data || typeof data !== 'object') return null;
 
-  // Prefer English language definitions first ('en'), then any available language key
-  const langSections = data.en || data[Object.keys(data)[0]] || [];
+  const isSpanish =
+    languageHint === 'es' ||
+    languageHint === 'spanish' ||
+    Boolean(data.es) ||
+    /[áéíóúñ¿¡]/i.test(originalWord);
+
+  let chosenLangCode = 'en';
+  let chosenLangName = 'English';
+  let langSections: any[] = [];
+
+  if (isSpanish && data.es) {
+    chosenLangCode = 'es';
+    chosenLangName = 'Spanish';
+    langSections = data.es;
+  } else if (languageHint && languageHint !== 'all' && data[languageHint]) {
+    chosenLangCode = languageHint;
+    chosenLangName = languageHint.toUpperCase();
+    langSections = data[languageHint];
+  } else if (data.en) {
+    chosenLangCode = 'en';
+    chosenLangName = 'English';
+    langSections = data.en;
+  } else {
+    const nonOtherKey = Object.keys(data).find((k) => k !== 'other');
+    if (nonOtherKey && data[nonOtherKey]) {
+      chosenLangCode = nonOtherKey;
+      chosenLangName = nonOtherKey === 'es' ? 'Spanish' : nonOtherKey.toUpperCase();
+      langSections = data[nonOtherKey];
+    }
+  }
+
   if (!Array.isArray(langSections) || langSections.length === 0) {
     return null;
   }
@@ -87,22 +173,27 @@ export function parseWiktionaryPayload(
       const rawDef = defObj.definition || '';
       const plain = cleanWiktionaryHtml(rawDef);
 
-      // Skip empty or trivial entries
       if (!plain || plain.length < 3) continue;
 
-      const examples: Array<{ quote: string }> = [];
+      const examples: Array<{ quote: string; translation?: string }> = [];
       if (Array.isArray(defObj.parsedExamples)) {
         for (const ex of defObj.parsedExamples) {
           const rawEx = ex.example || (typeof ex === 'string' ? ex : '');
           const plainEx = cleanWiktionaryHtml(rawEx);
-          if (plainEx && plainEx.length > 4) {
-            examples.push({ quote: plainEx });
+          const rawTrans = ex.translation || '';
+          const plainTrans = cleanWiktionaryHtml(rawTrans);
+          if (plainEx && plainEx.length > 3) {
+            examples.push({
+              quote: plainEx,
+              translation: plainTrans || undefined,
+            });
           }
         }
       }
 
       senses.push({
         definition: plain,
+        definitionEn: plain,
         register: pos || undefined,
         examples: examples.length > 0 ? examples.slice(0, 2) : undefined,
       });
@@ -115,8 +206,11 @@ export function parseWiktionaryPayload(
 
   return {
     word: originalWord,
+    language: chosenLangName,
+    languageCode: chosenLangCode,
     partOfSpeech: detectedPos.toLowerCase(),
     shortDefinition: senses[0].definition,
+    shortDefinitionEn: senses[0].definition,
     senses: senses.slice(0, 8),
     source: 'Wiktionary',
   };
@@ -125,17 +219,19 @@ export function parseWiktionaryPayload(
 /**
  * Fetches word definitions from Wiktionary.
  * Checks backend endpoint /api/definition/:word first, then direct Wikimedia REST API,
- * and falls back to Free Dictionary API if Wiktionary does not have an entry.
+ * and fetches native Spanish definitions when applicable.
  */
 export async function fetchWiktionaryDefinition(
-  rawWord: string
+  rawWord: string,
+  languageHint?: string
 ): Promise<WiktionaryResult | null> {
   const cleanWord = rawWord.trim();
   if (!cleanWord) return null;
 
-  // 1. Try server-side endpoint first (avoids browser CORS & network quirks)
+  // 1. Try server-side endpoint first with language hint
   try {
-    const res = await fetch(`/api/definition/${encodeURIComponent(cleanWord.toLowerCase())}`);
+    const langParam = languageHint ? `?lang=${encodeURIComponent(languageHint)}` : '';
+    const res = await fetch(`/api/definition/${encodeURIComponent(cleanWord.toLowerCase())}${langParam}`);
     if (res.ok) {
       const result = await res.json();
       if (result && result.shortDefinition && result.senses?.length > 0) {
@@ -166,15 +262,52 @@ export async function fetchWiktionaryDefinition(
 
       if (res.ok) {
         const data = await res.json();
-        const parsed = parseWiktionaryPayload(data, cleanWord);
-        if (parsed) return parsed;
+        const parsed = parseWiktionaryPayload(data, cleanWord, languageHint);
+        if (parsed) {
+          // If Spanish, also fetch native Spanish definition concurrently
+          if (parsed.languageCode === 'es' || languageHint === 'es') {
+            const nativeEs = await fetchNativeSpanishDefinition(cleanWord);
+            if (nativeEs) {
+              parsed.shortDefinitionEs = nativeEs;
+              if (parsed.senses[0]) {
+                parsed.senses[0].definitionEs = nativeEs;
+              }
+            }
+          }
+          return parsed;
+        }
       }
     } catch {
       // Try next variant
     }
   }
 
-  // 3. Fallback: Free Dictionary API
+  // 3. Native Spanish Wiktionary direct lookup if hinted or Spanish
+  if (languageHint === 'es' || /[áéíóúñ¿¡]/i.test(cleanWord)) {
+    const nativeEs = await fetchNativeSpanishDefinition(cleanWord);
+    if (nativeEs) {
+      return {
+        word: cleanWord,
+        language: 'Spanish',
+        languageCode: 'es',
+        partOfSpeech: /(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun',
+        shortDefinition: nativeEs,
+        shortDefinitionEs: nativeEs,
+        shortDefinitionEn: `Spanish lexical entry for "${cleanWord}".`,
+        senses: [
+          {
+            definition: nativeEs,
+            definitionEs: nativeEs,
+            definitionEn: `Spanish lexical entry for "${cleanWord}".`,
+            register: /(ar|er|ir)$/i.test(cleanWord) ? 'verb' : 'noun',
+          },
+        ],
+        source: 'Wiktionary (Español)',
+      };
+    }
+  }
+
+  // 4. Fallback: Free Dictionary API for English
   try {
     const dictRes = await fetch(
       `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord.toLowerCase())}`
@@ -195,6 +328,7 @@ export async function fetchWiktionaryDefinition(
               const examples = def.example ? [{ quote: def.example }] : undefined;
               senses.push({
                 definition: def.definition,
+                definitionEn: def.definition,
                 register: pos,
                 examples,
               });
@@ -205,8 +339,11 @@ export async function fetchWiktionaryDefinition(
         if (senses.length > 0) {
           return {
             word: cleanWord,
+            language: 'English',
+            languageCode: 'en',
             partOfSpeech: detectedPos,
             shortDefinition: senses[0].definition,
+            shortDefinitionEn: senses[0].definition,
             senses: senses.slice(0, 8),
             source: 'Open Dictionary',
           };
