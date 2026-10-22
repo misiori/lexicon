@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+@theme {
+  --font-caveat: 'Caveat', cursive, sans-serif;
+  --font-hand: 'Patrick Hand', cursive, sans-serif;
+  --color-lex-bg: #000000;
+  --color-lex-text: #E8E8E8;
+  --color-lex-secondary: #888888;
+  --color-lex-muted: #606060;
+  --color-lex-border: #252525;
+  --color-lex-hover: #151515;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: 'Patrick Hand', cursive, sans-serif;
+  background-color: #000000;
+  color: #E8E8E8;
+}
+
+body {
+  margin: 0;
+  font-family: 'Patrick Hand', cursive, sans-serif;
+  background-color: #000000;
+  color: #E8E8E8;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252525;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #383838;
+}
+
+.font-caveat {
+  font-family: 'Caveat', cursive, sans-serif;
+}
+
+.font-hand {
+  font-family: 'Patrick Hand', cursive, sans-serif;
+}
+
+/* Force upright Patrick Hand everywhere */
+* {
+  font-style: normal;
+}

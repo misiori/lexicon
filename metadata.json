@@ -1,0 +1,6 @@
+{
+  "name": "Lexicon",
+  "description": "An installable linguistic research tool for exploring words, etymology, meanings, cultural context, and cross-linguistic connections.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

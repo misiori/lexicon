@@ -1,0 +1,1132 @@
+import { WordEntry } from '../types/lexicon';
+
+/**
+ * Extensive Philological Archive of Ancient Roots & Historical Lineages.
+ * Contains core universal words with attested historical timelines and Proto-Indo-European / Proto-Germanic roots.
+ */
+export const ANCIENT_ROOTS_DB: Record<string, WordEntry> = {
+  star: {
+    id: 'root-star',
+    word: 'star',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/stɑːr/ (UK), /stɑːr/ (US)',
+    shortDefinition: 'A luminous celestial body of plasma generating light through nuclear fusion; historically, any night-sky point of light.',
+    linguisticNote: 'Directly from PIE *h₂stḗr, one of the most widely preserved celestial roots across the Indo-European daughter languages.',
+    morphemes: [
+      {
+        token: 'star',
+        type: 'root',
+        meaning: 'luminous celestial body, star',
+        ancestralForm: '*sternǭ (from PIE *h₂stḗr)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with Latin stella, Greek aster, Sanskrit tārā, Persian setareh.',
+      },
+    ],
+    senses: [
+      {
+        definition: 'Any of the self-luminous celestial objects seen as points of light in the night sky.',
+        register: 'astronomical / general',
+        examples: [
+          {
+            quote: 'The sailors navigated across the Aegean by the light of the North Star.',
+            translation: 'The sailors navigated across the Aegean by the light of the North Star.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *h₂stḗr (star, celestial beacon)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English sterre, from Old English steorra, from Proto-Germanic *sternǭ, from Proto-Indo-European *h₂stḗr ("star").',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *h₂stḗr > Proto-Germanic *sternǭ (loss of laryngeal *h₂, nasal suffixation)',
+        'Proto-Germanic *sternǭ > Old English steorra (assimilation of *rn > *rr, diphthongization to eo)',
+        'Middle English sterre > Early Modern English star (lowering of /er/ to /ar/)',
+      ],
+      roots: [
+        { root: '*h₂stḗr', language: 'Proto-Indo-European', meaning: 'star, celestial fire point' },
+        { root: '*sternǭ', language: 'Proto-Germanic', meaning: 'star' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*h₂stḗr', meaning: 'star' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*sternǭ', meaning: 'star' },
+        { period: 'Old English (c. 800 CE)', form: 'steorra', meaning: 'heavenly star (Cædmon\'s Hymn)' },
+        { period: 'Middle English (c. 1380)', form: 'sterre', meaning: 'star, astrological sign (Chaucer)' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*h₂stḗr',
+          meaning: 'celestial light, night beacon',
+          historicalContext: 'Nominal root with initial laryngeal *h₂, widespread from Vedic India to Celtic Ireland.',
+        },
+        {
+          era: 'Proto-Germanic Era',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*sternǭ',
+          meaning: 'star',
+          historicalContext: 'Formed with feminine n-stem ending, preserved in Gothic staírnō and Old Norse stjarna.',
+        },
+        {
+          era: 'Anglo-Saxon Britain',
+          date: 'c. 800 CE',
+          language: 'Old English',
+          form: 'steorra',
+          meaning: 'star, celestial guide',
+          historicalContext: 'Attested in Old English poetry and Bede\'s Ecclesiastical History.',
+        },
+        {
+          era: 'Middle English Period',
+          date: 'c. 1380',
+          language: 'Middle English',
+          form: 'sterre',
+          meaning: 'star, guide for mariners',
+          historicalContext: 'Standard form in Geoffrey Chaucer\'s translation of Boethius.',
+        },
+      ],
+      semanticShifts: 'Remained steady across millennia as the primal word for night-sky luminous points.',
+    },
+    relatedWords: [
+      {
+        word: 'astronomy',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From Greek aster (star) + nomos (law).',
+      },
+      {
+        word: 'stella',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'etymological',
+        explanation: 'Latin cognate from PIE *h₂stēr-lā (diminutive star).',
+      },
+      {
+        word: 'tārā',
+        language: 'Sanskrit',
+        languageCode: 'sa',
+        relationshipType: 'etymological',
+        explanation: 'Vedic Sanskrit cognate sharing the same Proto-Indo-European root.',
+      },
+    ],
+    culturalContext: {
+      summary: 'Stars served as the primary calendar and navigation coordinates for ancestral Indo-European pastoralists and sea navigators.',
+      nuances: [
+        'Present in Homeric Greek as the dog-star Sirius and the constellations of the Iliad.',
+        'Preserved in modern English derivatives: disaster (ill-starred), asterisk, and asteroid.',
+      ],
+    },
+    source: {
+      name: 'Oxford English Dictionary & Calvert Watkins Indo-European Roots',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  fire: {
+    id: 'root-fire',
+    word: 'fire',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/ˈfaɪ.ər/',
+    shortDefinition: 'The rapid oxidation of material in the chemical process of combustion, releasing heat and light.',
+    linguisticNote: 'Ancient neuter inanimate heteroclitic noun from PIE *péh₂wr̥, contrasted with animate active fire (*h₁n̥gʷnís, which gave Latin ignis).',
+    morphemes: [
+      {
+        token: 'fir-',
+        type: 'root',
+        meaning: 'inanimate fire, blaze, hearth',
+        ancestralForm: '*fōr (from PIE *péh₂wr̥)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with Greek pyr (pyrotechnic) and Hittite pahhur.',
+      },
+    ],
+    senses: [
+      {
+        definition: 'A state, process, or instance of combustion in which fuel or other material is ignited and combined with oxygen.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'They gathered around the campfire as night descended.',
+            translation: 'They gathered around the campfire as night descended.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *péh₂wr̥ (inanimate natural fire)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English fir / fyr, from Old English fȳr, from Proto-Germanic *fōr / *fūrijaz, from Proto-Indo-European *péh₂wr̥.',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *p > Proto-Germanic *f (Grimm\'s Law voiceless stop shift)',
+        'PIE *h₂ laryngeal causes vowel lengthening in Germanic',
+        'Old English fȳr (front rounded vowel /yː/) > Middle English fir > Modern English /faɪ.ər/ (Great Vowel Shift)',
+      ],
+      roots: [
+        { root: '*péh₂wr̥', language: 'Proto-Indo-European', meaning: 'inanimate elemental fire' },
+        { root: '*fōr', language: 'Proto-Germanic', meaning: 'fire' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*péh₂wr̥', meaning: 'fire (heteroclitic r/n stem)' },
+        { period: 'Hittite (c. 1600 BCE)', form: 'pahhur', meaning: 'fire (earliest attested daughter form)' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*fōr / *fūrijaz', meaning: 'fire' },
+        { period: 'Old English (c. 750 CE)', form: 'fȳr', meaning: 'flame, hearth fire (Beowulf)' },
+        { period: 'Middle English (c. 1380)', form: 'fyr / fier', meaning: 'combustion, fire' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*péh₂wr̥',
+          meaning: 'the physical element of fire',
+          historicalContext: 'Distinguished from animate *h₁n̥gʷnís (the sacred living flame, Sanskrit Agni, Latin ignis).',
+        },
+        {
+          era: 'Anatolian Bronze Age',
+          date: 'c. 1650 BCE',
+          language: 'Hittite',
+          form: 'pahhur',
+          meaning: 'fire, sacred hearth',
+          historicalContext: 'Documented on cuneiform clay tablets in Hattusa, proving the ancient laryngeal *h₂.',
+        },
+        {
+          era: 'Germanic Prehistory',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*fōr',
+          meaning: 'fire, burning',
+          historicalContext: 'Regular shift of *p to *f under Grimm\'s Law.',
+        },
+        {
+          era: 'Anglo-Saxon Britain',
+          date: 'c. 750 CE',
+          language: 'Old English',
+          form: 'fȳr',
+          meaning: 'fire, beacon, flame',
+          historicalContext: 'Prominently recorded in Beowulf describing dragon fire and funeral pyres.',
+        },
+      ],
+      semanticShifts: 'Maintained continuous designation of the elemental flame and hearth across the Germanic language family.',
+    },
+    relatedWords: [
+      {
+        word: 'pyre / pyrotechnic',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From Greek pyr (πῦρ), directly cognate with English fire from PIE *péh₂wr̥.',
+      },
+      {
+        word: 'Feuer',
+        language: 'German',
+        languageCode: 'de',
+        relationshipType: 'etymological',
+        explanation: 'German direct cognate from Proto-Germanic *fōr.',
+      },
+      {
+        word: 'ignite',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'semantic',
+        explanation: 'From Latin ignis, representing the animate counterpart to inanimate *péh₂wr̥.',
+      },
+    ],
+    culturalContext: {
+      summary: 'PIE had a famous dual noun system for fire: one animate (divine and living), one inanimate (the tool and fuel used by humans). English fire inherits the inanimate tool noun.',
+      nuances: [
+        'Greek borrowed the root into science: pyrometer, antipyretic, pyromania.',
+        'Survives in Old Norse as fúrr and modern Icelandic as fura.',
+      ],
+    },
+    source: {
+      name: 'Calvert Watkins American Heritage Dictionary of Indo-European Roots & OED',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  night: {
+    id: 'root-night',
+    word: 'night',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/naɪt/',
+    shortDefinition: 'The period of darkness in each twenty-four hours between sunset and sunrise.',
+    linguisticNote: 'Directly from PIE *nókʷts, one of the most universally conserved feminine consonant-stem nouns in all of historical linguistics.',
+    morphemes: [
+      {
+        token: 'night',
+        type: 'root',
+        meaning: 'night, dark period',
+        ancestralForm: '*nahts (from PIE *nókʷts)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with Latin nox, Greek nyx, Sanskrit nakti, German Nacht, Russian noch.',
+      },
+    ],
+    senses: [
+      {
+        definition: 'The time from sunset to sunrise when there is no sunlight.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'Stars lit up the clear summer night.',
+            translation: 'Stars lit up the clear summer night.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *nókʷts (night)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English night / nyght, from Old English niht / neaht, from Proto-Germanic *nahts, from PIE *nókʷts.',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *kʷ > Proto-Germanic *h (Grimm\'s Law voiceless labiovelar shift to velar fricative /x/)',
+        'Old English niht [nixt] with velar fricative spelled "gh"',
+        'Loss of velar fricative /x/ in Early Modern English with compensatory vowel lengthening (/iː/ > /aɪ/ via Great Vowel Shift)',
+      ],
+      roots: [
+        { root: '*nókʷts', language: 'Proto-Indo-European', meaning: 'night, darkness' },
+        { root: '*nahts', language: 'Proto-Germanic', meaning: 'night' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*nókʷts', meaning: 'night' },
+        { period: 'Classical Latin (c. 100 BCE)', form: 'nox (gen. noctis)', meaning: 'night' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*nahts', meaning: 'night' },
+        { period: 'Old English (c. 750 CE)', form: 'niht / neaht', meaning: 'night (Beowulf)' },
+        { period: 'Middle English (c. 1380)', form: 'nyght [niçt]', meaning: 'night' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Antiquity',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*nókʷts',
+          meaning: 'the nocturnal half of the diurnal cycle',
+          historicalContext: 'Ancient athematic root noun personified as the primordial goddess Nyx / Nox.',
+        },
+        {
+          era: 'Homeric & Classical Antiquity',
+          date: 'c. 700 BCE',
+          language: 'Ancient Greek & Latin',
+          form: 'nüks (νύξ) / nox',
+          meaning: 'night, darkness, death',
+          historicalContext: 'Core cosmological force in Hesiod\'s Theogony, giving birth to Sleep and Death.',
+        },
+        {
+          era: 'Germanic Prehistory',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*nahts',
+          meaning: 'night, reckoning of time',
+          historicalContext: 'Early Germanic peoples counted calendar periods by nights rather than days (origin of "fortnight").',
+        },
+        {
+          era: 'Anglo-Saxon Britain',
+          date: 'c. 750 CE',
+          language: 'Old English',
+          form: 'niht',
+          meaning: 'night, evening, dark',
+          historicalContext: 'Attested in Old English poetry; spelled with "h" representing the [x] sound.',
+        },
+      ],
+      semanticShifts: 'Preserved without semantic change for over five thousand years.',
+    },
+    relatedWords: [
+      {
+        word: 'nocturnal',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'etymological',
+        explanation: 'Borrowed from Latin nocturnus, derived from nox (gen. noctis).',
+      },
+      {
+        word: 'Nacht',
+        language: 'German',
+        languageCode: 'de',
+        relationshipType: 'etymological',
+        explanation: 'German cognate retaining the original velar fricative sound [naxt].',
+      },
+      {
+        word: 'equinox',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'etymological',
+        explanation: 'From aequus (equal) + nox (night).',
+      },
+    ],
+    culturalContext: {
+      summary: 'In early Germanic and Celtic society, time was counted in nights rather than days, reflecting lunar timekeeping (hence English "fortnight" = fourteen nights).',
+      nuances: [
+        'The spelling "gh" in English night preserves the sound of the German "ch" in Nacht.',
+      ],
+    },
+    source: {
+      name: 'Oxford English Dictionary & Julius Pokorny Indogermanisches etymologisches Wörterbuch',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  mother: {
+    id: 'root-mother',
+    word: 'mother',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/ˈmʌð.ər/',
+    shortDefinition: 'A female parent; a woman in relation to a child or offspring to whom she has given birth.',
+    linguisticNote: 'From PIE *meh₂tḗr, an essential kinship noun featuring the nursery syllable *ma- augmented by the agentive suffix *-tēr.',
+    morphemes: [
+      {
+        token: 'moth-',
+        type: 'root',
+        meaning: 'mother, maternal parent',
+        ancestralForm: '*mōdēr (from PIE *meh₂tḗr)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with Latin mater, Greek mētēr, Sanskrit mātā, Russian mat\'.',
+      },
+      {
+        token: '-er',
+        type: 'suffix',
+        meaning: 'kinship agentive suffix',
+        ancestralForm: '*-tēr',
+        ancestralLanguage: 'Proto-Indo-European',
+      },
+    ],
+    senses: [
+      {
+        definition: 'A woman in relation to her child or children.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'She inherited her love of books from her mother.',
+            translation: 'She inherited her love of books from her mother.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *meh₂tḗr (mother, female parent)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English moder, from Old English mōdor, from Proto-Germanic *mōdēr, from Proto-Indo-European *meh₂tḗr.',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *t > Proto-Germanic *þ / *ð (Grimm\'s & Verner\'s Law)',
+        'Proto-Germanic *mōdēr > Old English mōdor (/d/ from dental spirant hardening)',
+        'Middle English moder > Early Modern English mother (intervocalic /d/ before -er shifted to /ð/ around 1500)',
+      ],
+      roots: [
+        { root: '*meh₂tḗr', language: 'Proto-Indo-European', meaning: 'mother' },
+        { root: '*mōdēr', language: 'Proto-Germanic', meaning: 'mother' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*meh₂tḗr', meaning: 'female parent' },
+        { period: 'Vedic Sanskrit (c. 1500 BCE)', form: 'mātā́ (माता)', meaning: 'mother (Rigveda)' },
+        { period: 'Classical Latin (c. 100 BCE)', form: 'māter', meaning: 'mother' },
+        { period: 'Old English (c. 800 CE)', form: 'mōdor', meaning: 'mother (Alfred the Great)' },
+        { period: 'Middle English (c. 1380)', form: 'moder', meaning: 'mother' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*meh₂tḗr',
+          meaning: 'female progenitor, mother',
+          historicalContext: 'Formed by infant labial vocalization *ma- combined with kinship agent suffix *-tēr.',
+        },
+        {
+          era: 'Bronze Age Vedic Era',
+          date: 'c. 1500 BCE',
+          language: 'Vedic Sanskrit',
+          form: 'mātā́',
+          meaning: 'divine and human mother (Earth Mother Prithvi)',
+          historicalContext: 'Recorded throughout hymns of the Rigveda in devotional invocations.',
+        },
+        {
+          era: 'Proto-Germanic Era',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*mōdēr',
+          meaning: 'mother',
+          historicalContext: 'Voicing of dental consonant under Verner\'s Law due to non-initial PIE accent.',
+        },
+        {
+          era: 'Middle to Modern English',
+          date: '1400–1600 CE',
+          language: 'Middle to Early Modern English',
+          form: 'moder > mother',
+          meaning: 'mother',
+          historicalContext: 'The sound shift of -d- to -th- (/ð/) before -er also occurred in father, weather, and together.',
+        },
+      ],
+      semanticShifts: 'Unbroken kinship continuity across all recorded Indo-European societies.',
+    },
+    relatedWords: [
+      {
+        word: 'maternal / matrix',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'etymological',
+        explanation: 'From Latin mater (mother).',
+      },
+      {
+        word: 'metropolis',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From Greek mētēr (mother) + polis (city) = mother city.',
+      },
+      {
+        word: 'Mutter',
+        language: 'German',
+        languageCode: 'de',
+        relationshipType: 'etymological',
+        explanation: 'German direct cognate from Proto-Germanic *mōdēr.',
+      },
+    ],
+    culturalContext: {
+      summary: 'One of the ultimate benchmark words in comparative linguistics; Franz Bopp and Sir William Jones demonstrated Indo-European unity using mother, father, brother, and sister.',
+      nuances: [
+        'Present in over 40 distinct modern European and Asian languages with virtually identical phonetic structure.',
+      ],
+    },
+    source: {
+      name: 'Oxford English Dictionary & Calvert Watkins Indo-European Roots',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  sun: {
+    id: 'root-sun',
+    word: 'sun',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/sʌn/',
+    shortDefinition: 'The star at the center of the Solar System that supplies heat and light to the Earth.',
+    linguisticNote: 'Ancient heteroclitic n-stem from PIE *sóh₂wl̥ / *sh₂wén- (yielding Latin sol on the l-stem and English sun on the n-stem).',
+    morphemes: [
+      {
+        token: 'sun',
+        type: 'root',
+        meaning: 'sun, solar body',
+        ancestralForm: '*sunnǭ (from PIE *sh₂wén-)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with German Sonne, Dutch zon, Gothic sunnō; l-stem variant gives Latin sol and Greek helios.',
+      },
+    ],
+    senses: [
+      {
+        definition: 'The luminous celestial body around which the earth and other planets revolve.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'The morning sun warmed the frost on the meadow.',
+            translation: 'The morning sun warmed the frost on the meadow.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *sóh₂wl̥ / *sh₂wén- (sun)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English sonne, from Old English sunne, from Proto-Germanic *sunnǭ, from the oblique n-stem of PIE *sóh₂wl̥.',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'Heteroclitic l/n stem: nominative *sóh₂wl̥ (yielding Latin sōl, Greek hēlios) vs oblique *sh₂wén- (yielding Germanic *sunnǭ)',
+        'Vocalization of zero-grade *sh₂- into *su- in Germanic',
+        'Old English sunne (pronounced [ˈsun.ne]) > Middle English sonne > Modern English /sʌn/ (vowel unrounding and lowering)',
+      ],
+      roots: [
+        { root: '*sóh₂wl̥', language: 'Proto-Indo-European', meaning: 'sun (nominative form)' },
+        { root: '*sh₂wén-', language: 'Proto-Indo-European', meaning: 'sun (oblique n-stem form)' },
+        { root: '*sunnǭ', language: 'Proto-Germanic', meaning: 'sun' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*sóh₂wl̥ / *sh₂wén-', meaning: 'sun' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*sunnǭ', meaning: 'sun' },
+        { period: 'Old English (c. 750 CE)', form: 'sunne', meaning: 'sun (feminine gender in Old English)' },
+        { period: 'Middle English (c. 1380)', form: 'sonne', meaning: 'sun' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*sóh₂wl̥ / *sh₂wén-',
+          meaning: 'sun, solar disk, deity of day',
+          historicalContext: 'One of the classic PIE heteroclitic nouns possessing an l/n alternation.',
+        },
+        {
+          era: 'Proto-Germanic Era',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*sunnǭ',
+          meaning: 'sun (personified as the goddess Sól / Sunna)',
+          historicalContext: 'Feminine deity driving the solar chariot across the sky, pursued by the wolf Sköll.',
+        },
+        {
+          era: 'Old English Period',
+          date: 'c. 750 CE',
+          language: 'Old English',
+          form: 'sunne',
+          meaning: 'sun, source of light and life',
+          historicalContext: 'Attested in Cædmon\'s Hymn and the Old English Sol and Saturn dialogues.',
+        },
+        {
+          era: 'Middle English Period',
+          date: 'c. 1387',
+          language: 'Middle English',
+          form: 'sonne',
+          meaning: 'sun, daybreak',
+          historicalContext: 'Opening lines of Chaucer\'s Canterbury Tales: "the yonge sonne / Hath in the Ram his halve cours yronne".',
+        },
+      ],
+      semanticShifts: 'Remained constant as the cosmic heart of terrestrial light and seasonal cycles.',
+    },
+    relatedWords: [
+      {
+        word: 'solar',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'etymological',
+        explanation: 'From Latin sōl, representing the l-stem variant of the exact same PIE root.',
+      },
+      {
+        word: 'helium',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'Discovered in the solar spectrum; named from Greek hēlios (sun) from PIE *sóh₂wl̥.',
+      },
+      {
+        word: 'Sunday',
+        language: 'Old English',
+        languageCode: 'en',
+        relationshipType: 'etymological',
+        explanation: 'Loan translation (calque) of Latin dies Solis (day of the sun).',
+      },
+    ],
+    culturalContext: {
+      summary: 'In Germanic mythology, the Sun was feminine (Sunna/Sól) while the Moon was masculine (Máni), which is why sun is grammatically feminine in German (die Sonne) and Old English.',
+      nuances: [
+        'Romance languages inherited the masculine gender from Latin Sol.',
+      ],
+    },
+    source: {
+      name: 'Calvert Watkins Indo-European Roots & OED',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  moon: {
+    id: 'root-moon',
+    word: 'moon',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/muːn/',
+    shortDefinition: 'The natural satellite of the Earth, visible by reflected sunlight; historically, the measure of monthly time.',
+    linguisticNote: 'From PIE *mḗh₁n̥s (moon, month), derived from the verbal root *meh₁- ("to measure"), because ancestral peoples measured lunar calendar months.',
+    morphemes: [
+      {
+        token: 'moon',
+        type: 'root',
+        meaning: 'moon, monthly time-measurer',
+        ancestralForm: '*mēnō (from PIE *mḗh₁n̥s)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with Latin mensis (month), Greek mēn, German Mond, Sanskrit mās.',
+      },
+    ],
+    senses: [
+      {
+        definition: 'The earth\'s natural satellite, revolving around it once every 27.3 days.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'A full moon cast pale shadows across the snow.',
+            translation: 'A full moon cast pale shadows across the snow.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *mḗh₁n̥s (moon, month, from *meh₁- "to measure")',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English mone, from Old English mōna, from Proto-Germanic *mēnō, from PIE *mḗh₁n̥s.',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *mḗh₁n̥s > Proto-Germanic *mēnō (loss of laryngeal with vowel lengthening)',
+        'Proto-Germanic *ē > Old English ō (rounding of long low vowel)',
+        'Old English mōna > Middle English mone > Modern English moon (/oː/ raised to /uː/ in Great Vowel Shift)',
+      ],
+      roots: [
+        { root: '*meh₁-', language: 'Proto-Indo-European', meaning: 'to measure' },
+        { root: '*mḗh₁n̥s', language: 'Proto-Indo-European', meaning: 'moon, month (that which measures time)' },
+        { root: '*mēnō', language: 'Proto-Germanic', meaning: 'moon' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*mḗh₁n̥s', meaning: 'moon, monthly calendar unit' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*mēnō', meaning: 'moon (masculine gender)' },
+        { period: 'Old English (c. 750 CE)', form: 'mōna', meaning: 'moon (masculine personification)' },
+        { period: 'Middle English (c. 1380)', form: 'mone', meaning: 'moon' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*mḗh₁n̥s',
+          meaning: 'the measurer of time, moon',
+          historicalContext: 'Formed from *meh₁- ("to measure"), showing that the moon was revered primarily as a calendar device.',
+        },
+        {
+          era: 'Proto-Germanic Era',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*mēnō',
+          meaning: 'moon (masculine god Máni)',
+          historicalContext: 'In Norse cosmology, Máni steers the moon through the heavens, pursued by the wolf Hati.',
+        },
+        {
+          era: 'Anglo-Saxon Britain',
+          date: 'c. 750 CE',
+          language: 'Old English',
+          form: 'mōna',
+          meaning: 'moon',
+          historicalContext: 'Documented across Old English homilies, lunar prognostications, and meteorological charms.',
+        },
+        {
+          era: 'Middle English Era',
+          date: 'c. 1380',
+          language: 'Middle English',
+          form: 'mone',
+          meaning: 'the moon, lunar phases',
+          historicalContext: 'Recorded in John Wycliffe\'s Bible translation.',
+        },
+      ],
+      semanticShifts: 'Direct twin of English month; both originate from the moon\'s function as the measurer of cycles.',
+    },
+    relatedWords: [
+      {
+        word: 'month',
+        language: 'English',
+        languageCode: 'en',
+        relationshipType: 'etymological',
+        explanation: 'Doublet of moon from the same PIE root *mḗh₁n̥s.',
+      },
+      {
+        word: 'menstruation',
+        language: 'Classical Latin',
+        languageCode: 'la',
+        relationshipType: 'etymological',
+        explanation: 'From Latin mensis (month), sharing the root *meh₁- (to measure).',
+      },
+      {
+        word: 'Mond',
+        language: 'German',
+        languageCode: 'de',
+        relationshipType: 'etymological',
+        explanation: 'German cognate from Proto-Germanic *mēnō.',
+      },
+    ],
+    culturalContext: {
+      summary: 'Because the moon was the primary indicator of tidal and seasonal cycles, virtually all ancient Indo-European languages named it "the measurer" rather than just a celestial orb.',
+      nuances: [
+        'Contrasted with Latin luna, which comes from PIE *leuk- (to shine, the bright one).',
+      ],
+    },
+    source: {
+      name: 'Oxford English Dictionary & Calvert Watkins Indo-European Roots',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  tree: {
+    id: 'root-tree',
+    word: 'tree',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/triː/',
+    shortDefinition: 'A woody perennial plant, typically having a single stem or trunk growing to a considerable height and bearing lateral branches.',
+    linguisticNote: 'From PIE *dóru- / *deru- ("tree, oak, firm/enduring"), which is also the root of truth, trust, and druid.',
+    morphemes: [
+      {
+        token: 'tree',
+        type: 'root',
+        meaning: 'tree, wood, oak, firm timber',
+        ancestralForm: '*trewą (from PIE *deru-)',
+        ancestralLanguage: 'Proto-Germanic',
+        cognateNotes: 'Cognate with Greek drys (oak, tree), Russian derevo, Sanskrit dāru, Welsh derw.',
+      },
+    ],
+    senses: [
+      {
+        definition: 'A woody perennial plant having an elongated stem or trunk.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'An ancient oak tree stood at the center of the clearing.',
+            translation: 'An ancient oak tree stood at the center of the clearing.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *deru- / *dóru- (firm, solid, tree, oak)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English tree / tre, from Old English trēow, from Proto-Germanic *trewą, from PIE *deru-.',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *d > Proto-Germanic *t (Grimm\'s Law voiceless stop shift)',
+        'Proto-Germanic *trewą > Old English trēow (palatal diphthong)',
+        'Old English trēow > Middle English tre > Modern English /triː/',
+      ],
+      roots: [
+        { root: '*deru-', language: 'Proto-Indo-European', meaning: 'solid, steadfast, wood, tree' },
+        { root: '*trewą', language: 'Proto-Germanic', meaning: 'tree, wood, beam' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*deru- / *dóru-', meaning: 'tree, wood, solid' },
+        { period: 'Ancient Greek (c. 800 BCE)', form: 'drys (δρῦς)', meaning: 'oak tree, tree' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*trewą', meaning: 'tree, timber' },
+        { period: 'Old English (c. 750 CE)', form: 'trēow', meaning: 'tree, wood, gallows, cross (Dream of the Rood)' },
+        { period: 'Middle English (c. 1380)', form: 'tre', meaning: 'tree, wood' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*deru- / *dóru-',
+          meaning: 'firm oak, enduring timber',
+          historicalContext: 'Carried both a physical meaning (wood, tree) and a moral meaning (firm, true, unbending).',
+        },
+        {
+          era: 'Celtic & Greek Antiquity',
+          date: 'c. 500 BCE',
+          language: 'Gaulish & Ancient Greek',
+          form: 'deru / drys',
+          meaning: 'sacred oak',
+          historicalContext: 'Gave rise to the Celtic word druid (*dru-wid- = "knower of the oak / tree").',
+        },
+        {
+          era: 'Anglo-Saxon Britain',
+          date: 'c. 750 CE',
+          language: 'Old English',
+          form: 'trēow',
+          meaning: 'tree, living wood, the Rood',
+          historicalContext: 'Central symbol of The Dream of the Rood, where the tree speaks of its transformation into a cross.',
+        },
+      ],
+      semanticShifts: 'The moral sense branched into truth, trust, and truce, while the physical sense remained tree and timber.',
+    },
+    relatedWords: [
+      {
+        word: 'truth',
+        language: 'English',
+        languageCode: 'en',
+        relationshipType: 'etymological',
+        explanation: 'Directly from PIE *deru- (firm as a tree, unbending).',
+      },
+      {
+        word: 'druid',
+        language: 'Celtic',
+        languageCode: 'cy',
+        relationshipType: 'etymological',
+        explanation: 'From Celtic *dru-wid- (knower of the oak tree / great seer).',
+      },
+      {
+        word: 'dryad',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From Greek dryas (oak nymph), from drys (oak tree).',
+      },
+    ],
+    culturalContext: {
+      summary: 'In Indo-European thought, trees—especially the oak—were the embodiment of steadfastness. To be "true" was to be as solid, firm, and unyielding as a tree trunk.',
+      nuances: [
+        'Survives in Scandinavian as tre and Old Norse as tré.',
+      ],
+    },
+    source: {
+      name: 'Calvert Watkins Indo-European Roots & OED',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  truth: {
+    id: 'root-truth',
+    word: 'truth',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/truːθ/',
+    shortDefinition: 'The quality or state of being true; that which is in accordance with fact or reality; fidelity.',
+    linguisticNote: 'Abstract noun formed from true + suffix -th, tracing back to PIE *deru- ("firm, steadfast, tree"), reflecting the ancient concept that truth is that which stands unyielding like an oak.',
+    morphemes: [
+      {
+        token: 'tru-',
+        type: 'root',
+        meaning: 'firm, steadfast, faithful',
+        ancestralForm: '*trewwaz (from PIE *deru-)',
+        ancestralLanguage: 'Proto-Germanic',
+      },
+      {
+        token: '-th',
+        type: 'suffix',
+        meaning: 'abstract noun suffix denoting state',
+        ancestralForm: '*-iþō',
+        ancestralLanguage: 'Proto-Germanic',
+      },
+    ],
+    senses: [
+      {
+        definition: 'The quality of being true, genuine, or factual.',
+        register: 'standard',
+        examples: [
+          {
+            quote: 'The historical records revealed the truth of what transpired.',
+            translation: 'The historical records revealed the truth of what transpired.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'PIE *deru- (firm, solid, steadfast) + *-t- (nominalizing suffix)',
+      centuryOfFirstAttestation: '8th c. CE (Old English)',
+      origin: 'From Middle English trewthe / trouthe, from Old English trēowþ, from Proto-Germanic *triwwiþō ("loyalty, faithfulness, truth").',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'PIE *d > Proto-Germanic *t (Grimm\'s Law)',
+        'Formation of abstract noun suffix *-iþō on the adjective *trewwaz',
+        'Old English trēowþ > Middle English trewthe > Modern English /truːθ/',
+      ],
+      roots: [
+        { root: '*deru-', language: 'Proto-Indo-European', meaning: 'firm, solid as a tree' },
+        { root: '*triwwiþō', language: 'Proto-Germanic', meaning: 'faithfulness, covenant, truth' },
+      ],
+      historicalForms: [
+        { period: 'Proto-Indo-European (~3500 BCE)', form: '*deru-', meaning: 'firm, unbending' },
+        { period: 'Proto-Germanic (~500 BCE)', form: '*triwwiþō', meaning: 'pledge, fidelity, covenant' },
+        { period: 'Old English (c. 800 CE)', form: 'trēowþ', meaning: 'loyalty, faith, pledged word' },
+        { period: 'Middle English (c. 1380)', form: 'trouthe', meaning: 'fidelity, reality, fact (Chaucer)' },
+      ],
+      timeline: [
+        {
+          era: 'Indo-European Prehistory',
+          date: '~3500 BCE',
+          language: 'Proto-Indo-European',
+          form: '*deru-',
+          meaning: 'solid, rooted like an oak tree',
+          historicalContext: 'Root metaphor equating moral integrity with the structural permanence of wood.',
+        },
+        {
+          era: 'Proto-Germanic Tribal Society',
+          date: '~500 BCE',
+          language: 'Proto-Germanic',
+          form: '*triwwiþō',
+          meaning: 'fealty, sworn oath, loyalty between warrior and chieftain',
+          historicalContext: 'Truth originally meant keeping one\'s troth and upholding a treaty or solemn compact.',
+        },
+        {
+          era: 'Anglo-Saxon Britain',
+          date: 'c. 800 CE',
+          language: 'Old English',
+          form: 'trēowþ',
+          meaning: 'faith, honor, covenant, reliability',
+          historicalContext: 'Used in the Anglo-Saxon laws and treaties to denote binding treaties of peace.',
+        },
+        {
+          era: 'Late Middle English',
+          date: 'c. 1400 CE',
+          language: 'Middle English',
+          form: 'trouthe / treuthe',
+          meaning: 'accuracy with fact; correspondence to empirical reality',
+          historicalContext: 'Gradually shifted under scholastic influence from moral loyalty to epistemological accuracy.',
+        },
+      ],
+      semanticShifts: 'Shifted from moral loyalty and covenant (keeping one\'s "troth") to empirical factual correctness.',
+    },
+    relatedWords: [
+      {
+        word: 'tree',
+        language: 'English',
+        languageCode: 'en',
+        relationshipType: 'etymological',
+        explanation: 'Literal morphological twin; both come from the root for solid wood.',
+      },
+      {
+        word: 'betroth / troth',
+        language: 'English',
+        languageCode: 'en',
+        relationshipType: 'etymological',
+        explanation: 'Retains the original meaning of truth as a solemn pledge or vow.',
+      },
+      {
+        word: 'trust',
+        language: 'Old Norse',
+        languageCode: 'en',
+        relationshipType: 'etymological',
+        explanation: 'Borrowed from Old Norse traust (firmness, trust), from PIE *deru-.',
+      },
+    ],
+    culturalContext: {
+      summary: 'In Germanic culture, truth was not an abstract proposition about logic, but a personal commitment of honor: to be true was to remain faithful to your clan and word.',
+      nuances: [
+        'Rooted in the same PIE base *deru- that produced tree, expressing steadfast reliability.',
+      ],
+    },
+    source: {
+      name: 'Oxford English Dictionary & Calvert Watkins Indo-European Roots',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+
+  philosophy: {
+    id: 'root-philosophy',
+    word: 'philosophy',
+    language: 'English',
+    languageCode: 'en',
+    partOfSpeech: 'noun',
+    ipa: '/fɪˈlɒs.ə.fi/',
+    shortDefinition: 'The study of the fundamental nature of knowledge, reality, and existence; love of wisdom.',
+    linguisticNote: 'Coined in Ancient Greece, traditionally attributed to Pythagoras, from phílos ("beloved, loving") and sophía ("wisdom, skill").',
+    morphemes: [
+      {
+        token: 'philo-',
+        type: 'root',
+        meaning: 'loving, fond of, affectionate seeker',
+        ancestralForm: 'phílos (φίλος)',
+        ancestralLanguage: 'Ancient Greek',
+      },
+      {
+        token: '-sophy',
+        type: 'root',
+        meaning: 'wisdom, intellectual discernment, deep insight',
+        ancestralForm: 'sophía (σοφία)',
+        ancestralLanguage: 'Ancient Greek',
+      },
+    ],
+    senses: [
+      {
+        definition: 'The rational investigation of the principles of being, knowledge, and conduct.',
+        register: 'academic / standard',
+        examples: [
+          {
+            quote: 'Socratic dialogue established a new method in classical philosophy.',
+            translation: 'Socratic dialogue established a new method in classical philosophy.',
+          },
+        ],
+      },
+    ],
+    etymology: {
+      protoRoot: 'Greek phílos (beloved/seeker) + sophía (wisdom/skill)',
+      centuryOfFirstAttestation: '5th c. BCE (Classical Greek)',
+      origin: 'From Old French filosofie, via Latin philosophia from Ancient Greek philosophía (φιλοσοφία, "love of wisdom").',
+      certaintyLevel: 'established',
+      phoneticShifts: [
+        'Greek /pʰ/ (aspirated voiceless bilabial) borrowed into Latin as <ph> (/pʰ/ > /f/)',
+        'Old French filosofie > Middle English philosophie',
+      ],
+      roots: [
+        { root: 'phílos (φίλος)', language: 'Ancient Greek', meaning: 'loving, dear, friend' },
+        { root: 'sophía (σοφία)', language: 'Ancient Greek', meaning: 'wisdom, skill, craft' },
+      ],
+      historicalForms: [
+        { period: 'Classical Greek (c. 450 BCE)', form: 'philosophía (φιλοσοφία)', meaning: 'love of wisdom, intellectual curiosity' },
+        { period: 'Classical Latin (c. 50 BCE)', form: 'philosophia', meaning: 'philosophy (Cicero)' },
+        { period: 'Old French (c. 1200)', form: 'filosofie', meaning: 'scholastic philosophy' },
+        { period: 'Middle English (c. 1380)', form: 'philosophie', meaning: 'philosophy, natural science (Chaucer)' },
+      ],
+      timeline: [
+        {
+          era: 'Classical Greece',
+          date: '5th c. BCE',
+          language: 'Ancient Greek',
+          form: 'philosophía (φιλοσοφία)',
+          meaning: 'pursuit of knowledge and virtue rather than claimed possession of wisdom',
+          historicalContext: 'Pythagoras declined the title sophos ("wise man"), preferring philosophos ("lover of wisdom").',
+        },
+        {
+          era: 'Socratic & Platonic Academy',
+          date: 'c. 380 BCE',
+          language: 'Attic Greek',
+          form: 'philosophía',
+          meaning: 'examination of life, justice, and the Forms',
+          historicalContext: 'Codified by Plato and Aristotle as the queen of disciplines.',
+        },
+        {
+          era: 'Roman Republic',
+          date: '1st c. BCE',
+          language: 'Classical Latin',
+          form: 'philosophia',
+          meaning: 'Greek philosophical systems adapted for Roman civic life',
+          historicalContext: 'Cicero translated Greek philosophical terminology into Latin, domesticating the discipline.',
+        },
+        {
+          era: 'Medieval Universities',
+          date: '12th–14th c.',
+          language: 'Medieval Latin & Middle English',
+          form: 'philosophie',
+          meaning: 'the rational study of the cosmos, natural world, and metaphysics',
+          historicalContext: 'Covered all natural sciences ("natural philosophy") before modern specialization.',
+        },
+      ],
+      semanticShifts: 'Encompassed all sciences (physics, astronomy, biology) until the 19th-century emergence of modern empirical science.',
+    },
+    relatedWords: [
+      {
+        word: 'sophomore',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From sophos (wise) + moros (foolish) = wise fool.',
+      },
+      {
+        word: 'philanthropy',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From philo- (love) + anthropos (humankind).',
+      },
+      {
+        word: 'sophistry',
+        language: 'Ancient Greek',
+        languageCode: 'el',
+        relationshipType: 'etymological',
+        explanation: 'From sophistes (expert/instructor), which gained negative connotations of deceptive rhetoric.',
+      },
+    ],
+    culturalContext: {
+      summary: 'Before the 19th century, physics, chemistry, and biology were called "Natural Philosophy"; Isaac Newton\'s seminal 1687 book was titled Philosophiae Naturalis Principia Mathematica.',
+      nuances: [
+        'Contrasted with mere dogmatic belief; represents systematic inquisitive inquiry.',
+      ],
+    },
+    source: {
+      name: 'Liddell & Scott Greek-English Lexicon & OED',
+      isCurated: true,
+      isExternal: false,
+    },
+  },
+};

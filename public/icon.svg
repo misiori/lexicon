@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" fill="#000000"/>
+  <!-- Elegant minimalist linguistic glyph / lexicon book & letterform -->
+  <path d="M140 120 C 140 120, 210 135, 256 160 C 302 135, 372 120, 372 120 L 372 380 C 322 380, 276 395, 256 415 C 236 395, 190 380, 140 380 Z" fill="none" stroke="#E8E8E8" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="256" y1="160" x2="256" y2="415" stroke="#E8E8E8" stroke-width="16" stroke-linecap="round"/>
+  <!-- Subtle handwritten character mark 'l' inside -->
+  <path d="M190 220 Q 200 170 205 280 Q 210 320 225 320" fill="none" stroke="#888888" stroke-width="12" stroke-linecap="round"/>
+  <path d="M295 240 Q 320 240 320 270 Q 320 300 295 300 Q 330 300 330 325" fill="none" stroke="#888888" stroke-width="10" stroke-linecap="round"/>
+</svg>
