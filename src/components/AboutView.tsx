@@ -15,7 +15,7 @@ export const AboutView: React.FC<Props> = () => {
       {/* Purpose & Philosophy */}
       <div className="space-y-3 text-xs sm:text-sm text-[#888888] leading-relaxed">
         <p>
-          Lexicon is a simple tool for discovering ancient roots on some languages for linguists, philologists, translators, and curious readers. You can also see a meaning of any word in any of the supported languages.
+          Lexicon is a simple tool for discovering ancient roots in some languages for linguists, philologists, translators, and curious readers. You can also see a meaning of any word in any of the supported languages.
         </p>
       </div>
 
